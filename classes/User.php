@@ -71,9 +71,10 @@ class User {
             // create new one 
 
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $this->pdo->prepare("INSERT INTO users (name,email,password) Values (?, ?, ?");
+            $stmt = $this->pdo->prepare("INSERT INTO users (name,email,password) VALUES (?, ?, ?)");
             $stmt->execute([$name,$email,$hashedPassword]);
             return ['succes' => true, 'message' => "Inscription réussie !"];
+            echo "haaahwa";
         } catch (PDOException $e) {
             return ['succes' => false, 'message' => "Erreur Lors de l'inscription !" . $e->getMessage()];
         }
