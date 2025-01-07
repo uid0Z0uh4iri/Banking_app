@@ -15,7 +15,7 @@
                 <h1 class="text-2xl font-bold text-blue-600">Ma Banque</h1>
             </div>
             <nav class="mt-6">
-                <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
+                <a href="index.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="wallet"></i>
                     <span>Tableau de bord</span>
                 </a>
@@ -31,7 +31,7 @@
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
                 </a>
-                <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="historique.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
                 </a>

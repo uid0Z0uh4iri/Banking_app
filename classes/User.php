@@ -17,6 +17,15 @@ class User {
         $this->pdo = $pdo;
         if (isset($_SESSION['user_id'])) {
             $this->id = $_SESSION['user_id'];
+            // Charger les informations de l'utilisateur
+            $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->execute([$this->id]);
+            $user = $stmt->fetch();
+            if ($user) {
+                $this->name = $user['name'];
+                $this->email = $user['email'];
+                $this->role = $user['role'];
+            }
         }
     }
 
@@ -60,7 +69,7 @@ class User {
 
     }
 
-    // recuperer le nom du client
+  
 
 
     // Recuperer les soldes des comptes
@@ -83,6 +92,25 @@ class User {
         }
         
         return $balances;
+    }
+
+    // fonction pour alimenter le compte
+    public function alimenterCompte($montant, $account_type = 'courant') {
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE accounts 
+                SET balance = balance + ? 
+                WHERE user_id = ? AND account_type = ?
+            ");
+            $stmt->execute([$montant, $this->id, $account_type]);
+            
+            if ($stmt->rowCount() > 0) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }
 

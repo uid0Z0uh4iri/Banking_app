@@ -35,7 +35,7 @@ $balances = $user->getAccountBalances();
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg hidden md:block" id="sidebar">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">Ma Banque</h1>
+                <h1 class="text-2xl font-bold text-blue-600">Bonjour <?php echo htmlspecialchars(ucfirst($user->getName())); ?></h1>
             </div>
             <nav class="mt-6">
                 <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
@@ -155,21 +155,6 @@ $balances = $user->getAccountBalances();
     <i data-lucide="menu" class="w-6 h-6"></i>
 </button>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        lucide.createIcons();
-        const toggleButton = document.getElementById('toggleSidebar');
-        const toggleButtonDesktop = document.getElementById('toggleSidebarDesktop');
-        const sidebar = document.getElementById('sidebar');
-
-        toggleButton.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
-        });
-
-        toggleButtonDesktop.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
-        });
-    });
-</script>
+<script src ="/assets/js/main.js"></script>
 </body>
 </html>

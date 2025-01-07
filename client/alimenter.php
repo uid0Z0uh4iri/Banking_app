@@ -15,6 +15,24 @@ $db = new Database();
 $pdo = $db->connect();
 $user = new User($pdo);
 
+// Traiter le formulaire d'alimentation
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
+    $compte = filter_input(INPUT_POST, 'compte', FILTER_SANITIZE_STRING);
+    
+    if ($montant && $compte) {
+        if ($user->alimenterCompte($montant, $compte)) {
+            $_SESSION['success'] = "Votre compte a été alimenté avec succès";
+        } else {
+            $_SESSION['error'] = "Une erreur est survenue lors de l'alimentation du compte";
+        }
+    } else {
+        $_SESSION['error'] = "Veuillez remplir tous les champs correctement";
+    }
+    header('Location: alimenter.php');
+    exit();
+}
+
 // Recuperer les soldes des comptes
 $balances = $user->getAccountBalances();
 
@@ -30,8 +48,25 @@ $balances = $user->getAccountBalances();
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50" role="alert">
+            <strong class="font-bold">Succès!</strong>
+            <p class="block sm:inline"><?php echo $_SESSION['success']; ?></p>
+            <?php unset($_SESSION['success']); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50" role="alert">
+            <strong class="font-bold">Erreur!</strong>
+            <p class="block sm:inline"><?php echo $_SESSION['error']; ?></p>
+            <?php unset($_SESSION['error']); ?>
+        </div>
+    <?php endif; ?>
+ 
+
     <!-- Modal Alimenter Compte -->
-    <div id="alimenterCompteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div id="alimenterCompteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-20">
         <div class="relative top-20 mx-auto p-5 w-full max-w-md">
             <div class="bg-white rounded-lg shadow-xl">
                 <!-- Modal header -->
@@ -44,11 +79,11 @@ $balances = $user->getAccountBalances();
 
                 <!-- Modal body -->
                 <div class="p-6">
-                    <form id="alimenterForm" class="space-y-6">
+                    <form id="alimenterForm" class="space-y-6" method="POST">
                         <!-- Sélection du compte -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Compte à alimenter *</label>
-                            <select required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select name="compte" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">Sélectionnez un compte</option>
                                 <option value="courant">Compte Courant -  <span> <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</span></option>
                                 <option value="epargne">Compte Épargne - <span> <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</span></option>
@@ -64,6 +99,7 @@ $balances = $user->getAccountBalances();
                                 </div>
                                 <input 
                                     type="number" 
+                                    name="montant"
                                     required
                                     min="0.01"
                                     step="0.01"
@@ -74,66 +110,6 @@ $balances = $user->getAccountBalances();
                             <p class="mt-1 text-sm text-gray-500">Montant minimum : 0.01 MAD</p>
                         </div>
 
-
-                        <!-- Méthode de paiement -->
-                        <!-- <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Méthode de paiement *</label>
-                            <div class="space-y-3">
-                                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" name="paymentMethod" value="carte" class="form-radio text-blue-600" required>
-                                    <span class="ml-3">
-                                        <span class="block text-sm font-medium text-gray-900">Carte bancaire</span>
-                                        <span class="block text-sm text-gray-500">Débit immédiat</span>
-                                    </span>
-                                </label>
-
-                                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
-                                    <input type="radio" name="paymentMethod" value="virement" class="form-radio text-blue-600">
-                                    <span class="ml-3">
-                                        <span class="block text-sm font-medium text-gray-900">Virement bancaire</span>
-                                        <span class="block text-sm text-gray-500">2-3 jours ouvrés</span>
-                                    </span>
-                                </label>
-                            </div>
-                        </div> -->
-
-                        <!-- Informations carte (affiché conditionnellement) -->
-                        <!-- <div id="carteInfo" class="space-y-4 border-t pt-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Numéro de carte *</label>
-                                <input 
-                                    type="text" 
-                                    pattern="[0-9]{16}"
-                                    maxlength="16"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="1234 5678 9012 3456"
-                                >
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Date d'expiration *</label>
-                                    <input 
-                                        type="text" 
-                                        pattern="(0[1-9]|1[0-2])\/([0-9]{2})"
-                                        maxlength="5"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="MM/YY"
-                                    >
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">CVV *</label>
-                                    <input 
-                                        type="text" 
-                                        pattern="[0-9]{3}"
-                                        maxlength="3"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="123"
-                                    >
-                                </div>
-                            </div>
-                        </div> -->
-
                         <!-- Message de confirmation -->
                         <div class="bg-blue-50 p-4 rounded-lg">
                             <div class="flex">
@@ -142,7 +118,7 @@ $balances = $user->getAccountBalances();
                                 </div>
                                 <div class="ml-3">
                                     <p class="text-sm text-blue-700">
-                                        Le montant sera crédité sur votre compte selon le mode de paiement choisi.
+                                        Le montant sera crédité sur votre compte selon le type de compte choisi.
                                     </p>
                                 </div>
                             </div>
@@ -153,16 +129,18 @@ $balances = $user->getAccountBalances();
                 <!-- Modal footer -->
                 <div class="flex justify-end space-x-3 p-6 border-t bg-gray-50">
                     <button 
+                        type="button"
                         onclick="toggleModal()" 
                         class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
                     >
                         Annuler
                     </button>
                     <button 
-                        onclick="submitForm()"
+                        type="submit"
+                        form="alimenterForm"
                         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        Confirmer l'alimentation
+                        Alimenter
                     </button>
                 </div>
             </div>
@@ -172,31 +150,12 @@ $balances = $user->getAccountBalances();
     <script>
         lucide.createIcons();
 
-        // Gestion de l'affichage des champs de carte
-        document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const carteInfo = document.getElementById('carteInfo');
-                carteInfo.style.display = this.value === 'carte' ? 'block' : 'none';
-            });
-        });
-
-        // Fonction pour gérer la soumission du formulaire
-        function submitForm() {
-            const form = document.getElementById('alimenterForm');
-            if (form.checkValidity()) {
-                // Traitement du formulaire ici
-                alert('Alimentation effectuée avec succès !');
-                toggleModal();
-            } else {
-                form.reportValidity();
-            }
-        }
-
         // Fonction pour afficher/masquer le modal
         function toggleModal() {
             const modal = document.getElementById('alimenterCompteModal');
-            modal.classList.toggle('hidden');
-            window.location.href = 'index.php';
+            if (!modal.classList.contains('hidden')) {
+                window.location.href = 'index.php';
+            }
         }
 
         // Fermer le modal si on clique en dehors
