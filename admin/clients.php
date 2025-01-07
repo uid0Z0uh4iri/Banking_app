@@ -49,6 +49,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Récupérer tous les utilisateurs
 $users = $user->getAllUsers();
+
+// Ajouter cette partie pour gérer la recherche Ajax
+if (isset($_GET['ajax_search'])) {
+    $search = $_GET['ajax_search'];
+    // Préparer la requête de recherche
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE :search OR email LIKE :search");
+    $stmt->execute(['search' => "%$search%"]);
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Retourner les résultats en HTML
+    foreach ($users as $client): ?>
+        <tr>
+            <td><?php echo $client['id']; ?></td>
+            <td><?php echo htmlspecialchars($client['name']); ?></td>
+            <td><?php echo htmlspecialchars($client['email']); ?></td>
+            <td><?php echo $client['status']; ?></td>
+            <td>
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="action" value="toggle_status">
+                    <input type="hidden" name="user_id" value="<?php echo $client['id']; ?>">
+                    <button type="submit" class="text-<?php echo $client['status'] === 'active' ? 'red' : 'green'; ?>-600">
+                        <?php echo $client['status'] === 'active' ? 'Désactiver' : 'Activer'; ?>
+                    </button>
+                </form>
+                <a href="?edit=<?php echo $client['id']; ?>" class="text-blue-600">
+                    Modifier
+                </a>
+            </td>
+        </tr>
+    <?php endforeach;
+    exit; // Important: arrêter l'exécution ici pour l'appel Ajax
+}
 ?>
 
 <!-- Afficher le message -->
@@ -57,6 +89,16 @@ $users = $user->getAllUsers();
         <span class="block sm:inline"><?php echo $message; ?></span>
     </div>
 <?php endif; ?>
+
+<!-- Ajouter la barre de recherche avant la table -->
+<div class="mb-4">
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Rechercher un client..."
+        class="border rounded px-4 py-2 w-full"
+    >
+</div>
 
 <!-- Liste des clients -->
 <table class="min-w-full">
@@ -69,7 +111,7 @@ $users = $user->getAllUsers();
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="clientsTableBody">
         <?php foreach ($users as $client): ?>
             <tr>
                 <td><?php echo $client['id']; ?></td>
@@ -141,3 +183,38 @@ if (isset($_GET['edit'])) {
         <?php echo $editUser ? 'Modifier' : 'Ajouter'; ?> le client
     </button>
 </form>
+
+<!-- Ajouter le JavaScript à la fin de la page -->
+<script>
+// Attendre que la page soit chargée
+document.addEventListener('DOMContentLoaded', function() {
+    // Récupérer l'input de recherche
+    const searchInput = document.getElementById('searchInput');
+    // Récupérer le tbody du tableau
+    const tableBody = document.getElementById('clientsTableBody');
+    
+    // Variable pour stocker le timeout
+    let timeoutId;
+    
+    // Écouter l'événement input sur la barre de recherche
+    searchInput.addEventListener('input', function() {
+        // Récupérer la valeur de recherche
+        const searchTerm = this.value;
+        
+        // Annuler le timeout précédent
+        clearTimeout(timeoutId);
+        
+        // Créer un nouveau timeout (attendre 300ms après la dernière frappe)
+        timeoutId = setTimeout(function() {
+            // Créer la requête Ajax
+            fetch('clients.php?ajax_search=' + encodeURIComponent(searchTerm))
+                .then(response => response.text())
+                .then(html => {
+                    // Mettre à jour le contenu du tableau
+                    tableBody.innerHTML = html;
+                })
+                .catch(error => console.error('Erreur:', error));
+        }, 300);
+    });
+});
+</script>
