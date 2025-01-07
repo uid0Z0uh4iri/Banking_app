@@ -1,3 +1,4 @@
+
 <?php
 // db.php : Connexion a la base de données
     class Database {

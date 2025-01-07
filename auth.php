@@ -1,8 +1,7 @@
 <?php 
+session_start();
 require_once 'config/db.php';
 require_once 'classes/User.php';
-
-session_start();
 
 $db = new Database();
 $pdo = $db->connect();

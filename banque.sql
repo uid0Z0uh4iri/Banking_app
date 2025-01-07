@@ -73,16 +73,17 @@ CREATE TABLE `users` (
   `profile_pic` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `role` varchar(100) NOT NULL DEFAULT 'user'
+  `role` varchar(100) NOT NULL DEFAULT 'user',
+  `status` varchar(20) DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `profile_pic`, `created_at`, `updated_at`, `role`) VALUES
-(1, 'admin', 'admin@banque.com', 'admin', NULL, '2025-01-06 10:38:02', '2025-01-06 10:38:02', 'admin'),
-(3, 'ayoub', 'ayoub@gmail.com', '$2y$10$6GG7IRsGZPFzPiw0ftfll.Sn.Ht/Qzk9bFI7jle92/IcxHzyHFyNe', NULL, '2025-01-06 13:25:09', '2025-01-06 13:25:09', 'user');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `profile_pic`, `created_at`, `updated_at`, `role`, `status`) VALUES
+(1, 'admin', 'admin@banque.com', 'admin', NULL, '2025-01-06 10:38:02', '2025-01-06 10:38:02', 'admin', 'active'),
+(3, 'ayoub', 'ayoub@gmail.com', '$2y$10$6GG7IRsGZPFzPiw0ftfll.Sn.Ht/Qzk9bFI7jle92/IcxHzyHFyNe', NULL, '2025-01-06 13:25:09', '2025-01-06 13:25:09', 'user', 'active');
 
 --
 -- Indexes for dumped tables
