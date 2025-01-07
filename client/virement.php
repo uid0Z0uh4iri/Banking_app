@@ -19,7 +19,7 @@
                     <i data-lucide="wallet"></i>
                     <span>Tableau de bord</span>
                 </a>
-                <a href="mcompte.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="compte.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="credit-card"></i>
                     <span>Mes comptes</span>
                 </a>
