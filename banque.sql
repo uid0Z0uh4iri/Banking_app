@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 06, 2025 at 01:44 PM
+-- Generation Time: Jan 07, 2025 at 08:38 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -35,6 +35,14 @@ CREATE TABLE `accounts` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `accounts`
+--
+
+INSERT INTO `accounts` (`id`, `user_id`, `account_type`, `balance`, `created_at`, `updated_at`) VALUES
+(1, 3, 'courant', '100.00', '2025-01-06 15:59:59', '2025-01-06 15:59:59'),
+(2, 3, 'epargne', '500.00', '2025-01-07 08:21:40', '2025-01-07 08:21:40');
 
 -- --------------------------------------------------------
 
@@ -110,7 +118,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `accounts`
 --
 ALTER TABLE `accounts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `transactions`
