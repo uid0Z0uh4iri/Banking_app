@@ -1,3 +1,25 @@
+<?php 
+session_start();
+
+require_once '../config/db.php';
+require_once '../classes/User.php';
+
+// Verifier si l'utilisateur est connecte
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../auth.php');
+    exit();
+}
+
+// Initialiser la connexion et l'objet User
+$db = new Database();
+$pdo = $db->connect();
+$user = new User($pdo);
+
+// Recuperer les soldes des comptes
+$balances = $user->getAccountBalances();
+
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -28,8 +50,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Compte à alimenter *</label>
                             <select required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">Sélectionnez un compte</option>
-                                <option value="courant">Compte Courant - FR76 1234 5678 9012 (2,450.50 €)</option>
-                                <option value="epargne">Compte Épargne - FR76 9876 5432 1098 (15,750.20 €)</option>
+                                <option value="courant">Compte Courant -  <span> <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</span></option>
+                                <option value="epargne">Compte Épargne - <span> <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</span></option>
                             </select>
                         </div>
 
@@ -37,23 +59,24 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Montant *</label>
                             <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <span class="text-gray-500">€</span>
+                                <div class="absolute inset-y-0 left-0 pl-3  flex items-center pointer-events-none">
+                                    <span class="text-gray-500">MAD</span>
                                 </div>
                                 <input 
                                     type="number" 
                                     required
                                     min="0.01"
                                     step="0.01"
-                                    class="w-full pl-8 pr-12 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    class="w-full pl-[60px] pr-20 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="0.00"
                                 >
                             </div>
-                            <p class="mt-1 text-sm text-gray-500">Montant minimum : 0.01 €</p>
+                            <p class="mt-1 text-sm text-gray-500">Montant minimum : 0.01 MAD</p>
                         </div>
 
+
                         <!-- Méthode de paiement -->
-                        <div>
+                        <!-- <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Méthode de paiement *</label>
                             <div class="space-y-3">
                                 <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
@@ -72,10 +95,10 @@
                                     </span>
                                 </label>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Informations carte (affiché conditionnellement) -->
-                        <div id="carteInfo" class="space-y-4 border-t pt-4">
+                        <!-- <div id="carteInfo" class="space-y-4 border-t pt-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Numéro de carte *</label>
                                 <input 
@@ -109,7 +132,7 @@
                                     >
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Message de confirmation -->
                         <div class="bg-blue-50 p-4 rounded-lg">
@@ -173,6 +196,7 @@
         function toggleModal() {
             const modal = document.getElementById('alimenterCompteModal');
             modal.classList.toggle('hidden');
+            window.location.href = 'index.php';
         }
 
         // Fermer le modal si on clique en dehors

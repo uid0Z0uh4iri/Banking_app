@@ -1,8 +1,24 @@
 <?php 
 session_start();
 
-?>
+require_once '../config/db.php';
+require_once '../classes/User.php';
 
+// Verifier si l'utilisateur est connecte
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../auth.php');
+    exit();
+}
+
+// Initialiser la connexion et l'objet User
+$db = new Database();
+$pdo = $db->connect();
+$user = new User($pdo);
+
+// Recuperer les soldes des comptes
+$balances = $user->getAccountBalances();
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -67,14 +83,12 @@ session_start();
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
                 <div class="bg-white p-6 rounded-lg shadow">
                     <h3 class="text-lg font-semibold text-gray-700">Compte Courant</h3>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">€2,450.50</p>
-                    <p class="text-sm text-gray-500 mt-1">N° FR76 1234 5678 9012</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">MAD <?php echo number_format($balances['courant'], 2, ',', ' '); ?></p>
                 </div>
                 
                 <div class="bg-white p-6 rounded-lg shadow">
                     <h3 class="text-lg font-semibold text-gray-700">Compte Épargne</h3>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">€15,750.20</p>
-                    <p class="text-sm text-gray-500 mt-1">N° FR76 9876 5432 1098</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">MAD <?php echo number_format($balances['epargne'], 2, ',', ' '); ?></p>
                 </div>
             </div>
 

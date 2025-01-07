@@ -1,6 +1,7 @@
 <?php 
 
-require_once './config/db.php';
+require_once __DIR__.'/../config/db.php';
+
 
 class User {
     private $pdo;
@@ -14,6 +15,9 @@ class User {
     public function __construct($pdo)
     {
         $this->pdo = $pdo;
+        if (isset($_SESSION['user_id'])) {
+            $this->id = $_SESSION['user_id'];
+        }
     }
 
     // getters 
@@ -56,6 +60,30 @@ class User {
 
     }
 
+    // recuperer le nom du client
+
+
+    // Recuperer les soldes des comptes
+    public function getAccountBalances() {
+        $stmt = $this->pdo->prepare("
+            SELECT account_type, balance 
+            FROM accounts 
+            WHERE user_id = ?
+        ");
+        $stmt->execute([$this->id]);
+        $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $balances = [
+            'courant' => 0,
+            'epargne' => 0
+        ];
+        
+        foreach ($accounts as $account) {
+            $balances[$account['account_type']] = $account['balance'];
+        }
+        
+        return $balances;
+    }
 }
 
 ?>

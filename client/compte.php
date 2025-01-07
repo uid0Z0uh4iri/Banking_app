@@ -1,3 +1,24 @@
+<?php 
+session_start();
+
+require_once '../config/db.php';
+require_once '../classes/User.php';
+
+// Verifier si l'utilisateur est connecte
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../auth.php');
+    exit();
+}
+
+// Initialiser la connexion et l'objet User
+$db = new Database();
+$pdo = $db->connect();
+$user = new User($pdo);
+
+// Recuperer les soldes des comptes
+$balances = $user->getAccountBalances();
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -52,10 +73,9 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="text-xl font-semibold text-gray-800">Compte Courant</h3>
-                            <p class="text-sm text-gray-500">N° FR76 1234 5678 9012</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-bold text-gray-900">€2,450.50</p>
+                            <p class="text-2xl font-bold text-gray-900"> <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</p>
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                 Actif
                             </span>
@@ -103,10 +123,9 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <h3 class="text-xl font-semibold text-gray-800">Compte Épargne</h3>
-                            <p class="text-sm text-gray-500">N° FR76 9876 5432 1098</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-2xl font-bold text-gray-900">€15,750.20</p>
+                            <p class="text-2xl font-bold text-gray-900"> <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</p>
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                 Actif
                             </span>
