@@ -1,3 +1,8 @@
+<?php 
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,6 +12,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
+
 <body class="bg-gray-100">
     <div class="flex min-h-screen">
         <!-- Sidebar -->
@@ -15,27 +22,27 @@
                 <h1 class="text-2xl font-bold text-blue-600">Ma Banque</h1>
             </div>
             <nav class="mt-6">
-                <a href="index.html" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
+                <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
                     <i data-lucide="wallet"></i>
                     <span>Tableau de bord</span>
                 </a>
-                <a href="compte.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="compte.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="credit-card"></i>
                     <span>Mes comptes</span>
                 </a>
-                <a href="virement.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="virement.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <a href="benificier.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
                 </a>
-                <a href="historique.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
                 </a>
-                <a href="profeil.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="profil.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="user"></i>
                     <span>Profil</span>
                 </a>
@@ -74,16 +81,22 @@
             <!-- Quick Actions -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
                 <button class="flex items-center justify-center space-x-2 p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <i data-lucide="send" class="w-5 h-5"></i>
-                    <span>Nouveau virement</span>
+                <a href="virement.php">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                <span>Nouveau virement</span>
+                </a>
                 </button>
                 <button class="flex items-center justify-center space-x-2 p-4 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <a href="alimenter.php">
                     <i data-lucide="plus-circle" class="w-5 h-5"></i>
                     <span>Alimenter compte</span>
+                    </a>
                 </button>
                 <button class="flex items-center justify-center space-x-2 p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                    <i data-lucide="users" class="w-5 h-5"></i>
-                    <span>Gérer bénéficiaires</span>
+                <a href="benificier.php">
+                <i data-lucide="users" class="w-5 h-5"></i>
+                <span>Gérer bénéficiaires</span>
+                </a>
                 </button>
             </div>
 
