@@ -3,6 +3,7 @@ session_start();
 
 require_once '../config/db.php';
 require_once '../classes/User.php';
+require_once '../classes/Compte.php';
 
 // Verifier si l'utilisateur est connecte
 if (!isset($_SESSION['user_id'])) {
@@ -14,14 +15,15 @@ if (!isset($_SESSION['user_id'])) {
 $db = new Database();
 $pdo = $db->connect();
 $user = new User($pdo);
+$compte = new Compte($pdo);
 
 // Traiter le formulaire d'alimentation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
-    $compte = filter_input(INPUT_POST, 'compte', FILTER_SANITIZE_STRING);
+    $compte_type = htmlspecialchars($_POST['compte'] ?? '', ENT_QUOTES, 'UTF-8');
     
-    if ($montant && $compte) {
-        if ($user->alimenterCompte($montant, $compte)) {
+    if ($montant && $compte_type) {
+        if ($compte->alimenterCompte($_SESSION['user_id'], $montant, $compte_type)) {
             $_SESSION['success'] = "Votre compte a été alimenté avec succès";
         } else {
             $_SESSION['error'] = "Une erreur est survenue lors de l'alimentation du compte";
@@ -55,6 +57,7 @@ $balances = $user->getAccountBalances();
             <?php unset($_SESSION['success']); ?>
         </div>
     <?php endif; ?>
+ 
 
     <?php if (isset($_SESSION['error'])): ?>
         <div class="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50" role="alert">

@@ -105,11 +105,6 @@ class User {
         return $stmt->execute([$newStatus, $id]);
     }
 
-    
-
-  
-
-
     // Recuperer les soldes des comptes
     public function getAccountBalances() {
         $stmt = $this->pdo->prepare("
@@ -132,24 +127,6 @@ class User {
         return $balances;
     }
 
-    // fonction pour alimenter le compte
-    public function alimenterCompte($montant, $account_type = 'courant') {
-        try {
-            $stmt = $this->pdo->prepare("
-                UPDATE accounts 
-                SET balance = balance + ? 
-                WHERE user_id = ? AND account_type = ?
-            ");
-            $stmt->execute([$montant, $this->id, $account_type]);
-            
-            if ($stmt->rowCount() > 0) {
-                return true;
-            }
-            return false;
-        } catch (PDOException $e) {
-            return false;
-        }
-    }
 }
 
 ?>
