@@ -26,6 +26,7 @@ $balances = $user->getAccountBalances();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ma Banque - Tableau de bord</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -36,6 +37,20 @@ $balances = $user->getAccountBalances();
         <div class="w-64 bg-white shadow-lg hidden md:block" id="sidebar">
             <div class="p-6">
                 <h1 class="text-2xl font-bold text-blue-600">Bonjour <?php echo htmlspecialchars(ucfirst($user->getName())); ?></h1>
+            </div>
+            <div class="burger-menu ml-[30px] relative">
+                <button class="burger-button rounded-full p-2 hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-user-circle text-2xl text-blue-600"></i>
+                </button>
+                <div class="menu-options hidden absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                    <a href="profil.php" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-user mr-2"></i>Profil
+                    </a>
+                    <div class="border-t border-gray-100"></div>
+                    <a href="../auth.php?logout=true" class="block px-4 py-2 text-red-600 hover:bg-red-50 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                    </a>
+                </div>
             </div>
             <nav class="mt-6">
                 <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
@@ -57,10 +72,6 @@ $balances = $user->getAccountBalances();
                 <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
-                </a>
-                <a href="profil.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
-                    <i data-lucide="user"></i>
-                    <span>Profil</span>
                 </a>
             </nav>
         </div>
@@ -107,9 +118,9 @@ $balances = $user->getAccountBalances();
                     </a>
                 </button>
                 <button class="flex items-center justify-center space-x-2 p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                <a href="benificier.php">
+                <a href="retrait.php">
                 <i data-lucide="users" class="w-5 h-5"></i>
-                <span>Gérer bénéficiaires</span>
+                <span>Extraire de l'argent</span>
                 </a>
                 </button>
             </div>
@@ -155,6 +166,21 @@ $balances = $user->getAccountBalances();
     <i data-lucide="menu" class="w-6 h-6"></i>
 </button>
 
+<script>
+    document.querySelector('.burger-button').addEventListener('click', function(e) {
+        e.stopPropagation();
+        const menu = document.querySelector('.menu-options');
+        menu.classList.toggle('hidden');
+    });
+
+    // Fermer le menu si on clique en dehors
+    document.addEventListener('click', function(e) {
+        const menu = document.querySelector('.menu-options');
+        if (!menu.contains(e.target) && !document.querySelector('.burger-button').contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>
 <script src ="/assets/js/main.js"></script>
 </body>
 </html>
