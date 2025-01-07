@@ -1,23 +1,14 @@
 <?php
-// db.php : Connexion a la base de données
-    class Database {
-        private $host = 'localhost';   
-        private $dbname = 'banque';   
-        private $username = 'root';    
-        private $password = '';        
-        private $conn;
-
-        public function connect() {
-            try {
-                // Cree une nouvelle connexion PDO
-                $this->conn = new PDO("mysql:host=$this->host;dbname=$this->dbname", $this->username, $this->password);
-                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                return $this->conn;  // Retourne la connexion
-            } catch (PDOException $e) {
-                echo "Erreur de connexion : " . $e->getMessage();
-                return null;
-            }
-        }
-    }
-
-?>
+try {
+    $pdo = new PDO(
+        "mysql:host=localhost;dbname=banque;charset=utf8mb4",
+        "root",  // votre nom d'utilisateur MySQL
+        "",      // votre mot de passe MySQL
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
+    );
+} catch(PDOException $e) {
+    die("Erreur de connexion : " . $e->getMessage());
+}
