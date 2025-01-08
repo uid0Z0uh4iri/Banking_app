@@ -32,13 +32,11 @@ class User {
     }
 
     // getters 
-
     public function getId()  { return $this->id; }
     public function getName()  { return $this->name; }
     public function getEmail()  { return $this->email; }
     public function getRole()  { return $this->role; }
     public function getdate() { return $this->created_at; }
-
 
     // login method
 
@@ -108,22 +106,41 @@ class User {
         return $stmt->execute([$newStatus, $id]);
     }
 
+    // Récupérer les comptes de l'utilisateur
+    public function getAccounts() {
+        $accounts = [];
+        
+        // Récupérer le compte courant
+        $stmt = $this->pdo->prepare("SELECT id FROM accounts WHERE user_id = ? AND account_type = 'courant'");
+        $stmt->execute([$this->id]);
+        $courant = $stmt->fetch();
+        if ($courant) {
+            $accounts['courant'] = $courant;
+        }
+
+        // Récupérer le compte épargne
+        $stmt = $this->pdo->prepare("SELECT id FROM accounts WHERE user_id = ? AND account_type = 'epargne'");
+        $stmt->execute([$this->id]);
+        $epargne = $stmt->fetch();
+        if ($epargne) {
+            $accounts['epargne'] = $epargne;
+        }
+
+        return $accounts;
+    }
+
     // Recuperer les soldes des comptes
     public function getAccountBalances() {
+        $balances = ['courant' => 0, 'epargne' => 0];
+        
         $stmt = $this->pdo->prepare("
             SELECT account_type, balance 
             FROM accounts 
             WHERE user_id = ?
         ");
         $stmt->execute([$this->id]);
-        $accounts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        $balances = [
-            'courant' => 0,
-            'epargne' => 0
-        ];
-        
-        foreach ($accounts as $account) {
+        while ($account = $stmt->fetch()) {
             $balances[$account['account_type']] = $account['balance'];
         }
         

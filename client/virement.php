@@ -3,6 +3,7 @@ session_start();
 
 require_once '../config/db.php';
 require_once '../classes/User.php';
+require_once '../classes/Transactions.php';
 
 // Verifier si l'utilisateur est connecte
 if (!isset($_SESSION['user_id'])) {
@@ -14,9 +15,52 @@ if (!isset($_SESSION['user_id'])) {
 $db = new Database();
 $pdo = $db->connect();
 $user = new User($pdo);
+$transaction = new Transactions($pdo);
 
-// Recuperer les soldes des comptes
-$balances = $user->getAccountBalances();
+// Traitement du formulaire de virement
+$message = '';
+$messageType = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $fromAccount = $_POST['debitAccount'];
+        $toAccount = $_POST['creditAccount'];
+        $amount = floatval($_POST['amount']);
+
+        if ($fromAccount === $toAccount) {
+            throw new Exception("Vous ne pouvez pas faire un virement vers le même compte");
+        }
+
+        if ($amount <= 0) {
+            throw new Exception("Le montant doit être supérieur à 0");
+        }
+
+        // Récupérer les IDs des comptes
+        $accounts = $user->getAccounts();
+        if (!isset($accounts[$fromAccount]) || !isset($accounts[$toAccount])) {
+            throw new Exception("Un des comptes n'existe pas");
+        }
+        
+        $fromAccountId = $accounts[$fromAccount]['id'];
+        $toAccountId = $accounts[$toAccount]['id'];
+
+        // Effectuer le transfert
+        $transaction->transferBetweenAccounts($fromAccountId, $toAccountId, $amount);
+        
+        $message = "Le virement a été effectué avec succès";
+        $messageType = "success";
+        
+        // Recharger les soldes après le transfert
+        $balances = $user->getAccountBalances();
+        
+    } catch (Exception $e) {
+        $message = $e->getMessage();
+        $messageType = "error";
+    }
+} else {
+    // Recuperer les soldes des comptes
+    $balances = $user->getAccountBalances();
+}
 
 ?>
 <!DOCTYPE html>
@@ -68,10 +112,15 @@ $balances = $user->getAccountBalances();
             <h2 class="text-2xl font-bold text-gray-800">Effectuer un transfert</h2>
             
             <div class="bg-white p-6 rounded-lg shadow mt-6">
-                <form class="space-y-4">
+                <?php if ($message): ?>
+                    <div class="mb-4 p-4 rounded <?php echo $messageType === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'; ?>">
+                        <?php echo htmlspecialchars($message); ?>
+                    </div>
+                <?php endif; ?>
+                <form class="space-y-4" method="POST" action="">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Compte à débiter</label>
-                        <select id="debitAccount" class="mt-1 block w-full rounded-md border border-gray-300 p-2">
+                        <select name="debitAccount" id="debitAccount" class="mt-1 block w-full rounded-md border border-gray-300 p-2">
                             <option value="courant">Compte Courant - <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</option>
                             <option value="epargne">Compte Épargne - <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</option>
                         </select>
@@ -79,7 +128,7 @@ $balances = $user->getAccountBalances();
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Compte à bénéficier</label>
-                        <select id="creditAccount" class="mt-1 block w-full rounded-md border border-gray-300 p-2">
+                        <select name="creditAccount" id="creditAccount" class="mt-1 block w-full rounded-md border border-gray-300 p-2">
                             <option value="courant">Compte Courant - <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</option>
                             <option value="epargne">Compte Épargne - <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</option>
                         </select>
@@ -92,29 +141,20 @@ $balances = $user->getAccountBalances();
                                 <span class="text-gray-500 sm:text-sm">MAD</span>
                             </div>
                             <input 
+                                name="amount"
                                 type="number" 
                                 min="0.01" 
                                 step="0.01"
                                 class="pl-[60px] block w-full rounded-md border border-gray-300 p-2" 
                                 placeholder="0.00"
+                                required
                             />
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Motif</label>
-                        <input 
-                            type="text"
-                            class="mt-1 block w-full rounded-md border border-gray-300 p-2" 
-                            placeholder="Motif du virement"
-                        />
-                    </div>
-
-                    <div class="pt-4">
-                        <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700">
-                            Valider le virement
-                        </button>
-                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+                        Effectuer le virement
+                    </button>
                 </form>
             </div>
 
