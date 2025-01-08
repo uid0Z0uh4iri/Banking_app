@@ -55,44 +55,79 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/style.css">
-    <title>Document</title>
+    <title>Connexion</title>
+    <!-- Ajout de Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-<?php if (!empty($errors)): ?>
-    <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
-        <?php foreach($errors as $error): ?>
-            <p><?php echo htmlspecialchars($error); ?></p>
-        <?php endforeach; ?>
-        <?php $errors = []; ?>
-    </div>
-<?php endif; ?>
-<?php if (isset($_SESSION['success_message'])): ?>
-    <div class="mb-4 p-3 bg-green-100 text-green-700 rounded">
-        <?php 
-        echo htmlspecialchars($_SESSION['success_message']); 
-        unset($_SESSION['success_message']); // Effacer le message aprrs l'avoir afficher
-        ?>
-    </div>
-<?php endif; ?>
+<body class="bg-gradient">
+    <div class="main-container">
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-danger">
+                <?php foreach($errors as $error): ?>
+                    <p><i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error); ?></p>
+                <?php endforeach; ?>
+                <?php $errors = []; ?>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <?php 
+                echo htmlspecialchars($_SESSION['success_message']); 
+                unset($_SESSION['success_message']);
+                ?>
+            </div>
+        <?php endif; ?>
 
+        <div class="login-container">
+            <div class="logo-container">
+                <div class="bank-logo">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h2 class="bank-name">Banka2Ka</h2>
+            </div>
+            
+            <div class="login-header">
+                <h1>Connexion</h1>
+                <p>Bienvenue sur votre espace bancaire sécurisé</p>
+            </div>
+            
+            <form action="auth.php" method="post" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="Votre email" required/>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Votre mot de passe" required/>
+                    </div>
+                </div>
 
-<div class="container" id="container">
-    <div class="form-container">
-        <form action="auth.php" method="post">
-            <h1>Sign in</h1>
-            <input type="email" placeholder="Email" name="email" required/>
-            <input type="password" placeholder="Password" name="password" required/>
-            <a href="#">Forgot your password?</a>
-            <button>Sign In</button>
-        </form>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember">
+                        <span>Se souvenir de moi</span>
+                    </label>
+                    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                </div>
+
+                <button type="submit" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+            </form>
+        </div>
     </div>
-</div>
-
 </body>
-<script src="assets/js/script.js"></script>
 </html>

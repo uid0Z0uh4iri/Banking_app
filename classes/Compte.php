@@ -31,6 +31,26 @@ class Compte {
         }
     }
 
+    // Fonction pour faire un retrait
+
+    public function retraitCompte($user_id, $montant, $account_type = 'courant') {
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE accounts 
+                SET balance = balance - ? 
+                WHERE user_id = ? AND account_type = ?
+            ");
+            $stmt->execute([$montant, $user_id, $account_type]);
+            
+            if ($stmt->rowCount() > 0) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
     // Récupérer le solde d'un compte spécifique
     public function getBalance($user_id, $account_type = 'courant') {
         $stmt = $this->pdo->prepare("
