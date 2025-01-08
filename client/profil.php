@@ -1,3 +1,135 @@
+<?php
+// Au début du fichier, avant le HTML
+require_once('../config/database.php');
+session_start();
+
+// Logic dial update password (mettre ce bloc en PREMIER)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
+    $current_password = $_POST['current_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+    $user_id = 1; // Normalement ghadi takhdu men session
+
+    try {
+        // Vérifier si le mot de passe actuel est correct
+        $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
+        $stmt->execute([$user_id]);
+        $user = $stmt->fetch();
+
+        if (!password_verify($current_password, $user['password'])) {
+            $_SESSION['password_error'] = "Le mot de passe actuel est incorrect";
+        } 
+        elseif ($new_password !== $confirm_password) {
+            $_SESSION['password_error'] = "Les nouveaux mots de passe ne correspondent pas";
+        }
+        elseif (strlen($new_password) < 8) {
+            $_SESSION['password_error'] = "Le nouveau mot de passe doit contenir au moins 8 caractères";
+        }
+        else {
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+            
+            // Mise à jour uniquement du mot de passe
+            $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :user_id");
+            $stmt->execute([
+                'password' => $hashed_password,
+                'user_id' => $user_id
+            ]);
+
+            $_SESSION['password_success'] = "Votre mot de passe a été mis à jour avec succès";
+        }
+
+        header('Location: profil.php');
+        exit();
+
+    } catch(PDOException $e) {
+        $_SESSION['password_error'] = "Erreur lors de la mise à jour du mot de passe: " . $e->getMessage();
+        header('Location: profil.php');
+        exit();
+    }
+}
+
+// Logic dial update profile (mettre ce bloc APRÈS)
+elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Récupération des données du formulaire
+    $civility = $_POST['civility'] ?? '';
+    $lastname = $_POST['nom'] ?? '';
+    $firstname = $_POST['prenom'] ?? '';
+    $birthdate = $_POST['date_naissance'] ?? '';
+    $nationality = $_POST['nationalite'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $phone = $_POST['telephone'] ?? '';
+    $address = $_POST['adresse'] ?? '';
+    $postal_code = $_POST['code_postal'] ?? '';
+    $city = $_POST['ville'] ?? '';
+    
+    $user_id = 1; // Normalement ghadi takhdu men session
+
+    try {
+        $sql = "UPDATE users SET 
+                civility = :civility,
+                firstname = :firstname,
+                lastname = :lastname,
+                birthdate = :birthdate,
+                nationality = :nationality,
+                email = :email,
+                phone = :phone,
+                address = :address,
+                postal_code = :postal_code,
+                city = :city
+                WHERE id = :user_id";
+                
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            'civility' => $civility,
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'birthdate' => $birthdate,
+            'nationality' => $nationality,
+            'email' => $email,
+            'phone' => $phone,
+            'address' => $address,
+            'postal_code' => $postal_code,
+            'city' => $city,
+            'user_id' => $user_id
+        ]);
+
+        $_SESSION['message_success'] = "Les informations ont été mises à jour avec succès!";
+        header('Location: profil.php');
+        exit();
+    } catch(PDOException $e) {
+        $_SESSION['message_error'] = "Erreur lors de la mise à jour: " . $e->getMessage();
+        header('Location: profil.php');
+        exit();
+    }
+}
+
+// Récupération des messages de la session
+$message_success = $_SESSION['message_success'] ?? null;
+$message_error = $_SESSION['message_error'] ?? null;
+
+// Ajouter avec les autres récupérations de messages
+$password_success = $_SESSION['password_success'] ?? null;
+$password_error = $_SESSION['password_error'] ?? null;
+
+// Suppression des messages de la session après les avoir récupérés
+unset($_SESSION['message_success']);
+unset($_SESSION['message_error']);
+
+// Ajouter avec les autres unset
+unset($_SESSION['password_success']);
+unset($_SESSION['password_error']);
+
+// Récupération des données actuelles de l'utilisateur
+try {
+    $user_id = 1; // Normalement ghadi takhdu men session
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch();
+} catch(PDOException $e) {
+    $message_error = "Erreur lors de la récupération des données: " . $e->getMessage();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -52,7 +184,7 @@
                     <div class="bg-white rounded-lg shadow">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-700 mb-4">Informations Personnelles</h3>
-                            <form class="space-y-6">
+                            <form class="space-y-6" method="POST">
                                 <!-- Photo de profil -->
                                 <div class="flex items-center space-x-6">
                                     <div class="relative">
@@ -84,9 +216,9 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Civilité</label>
-                                        <select class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2">
-                                            <option>M.</option>
-                                            <option>Mme</option>
+                                        <select name="civility" class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2">
+                                            <option value="M." <?php echo (isset($user['civility']) && $user['civility'] == 'M.') ? 'selected' : ''; ?>>M.</option>
+                                            <option value="Mme" <?php echo (isset($user['civility']) && $user['civility'] == 'Mme') ? 'selected' : ''; ?>>Mme</option>
                                         </select>
                                     </div>
 
@@ -104,8 +236,9 @@
                                         <label class="block text-sm font-medium text-gray-700">Nom</label>
                                         <input 
                                             type="text" 
+                                            name="nom"
                                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                            value="Dupont"
+                                            value="<?php echo htmlspecialchars($user['lastname'] ?? ''); ?>"
                                         />
                                     </div>
 
@@ -113,8 +246,9 @@
                                         <label class="block text-sm font-medium text-gray-700">Prénom</label>
                                         <input 
                                             type="text" 
+                                            name="prenom"
                                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                            value="Jean"
+                                            value="<?php echo htmlspecialchars($user['firstname'] ?? ''); ?>"
                                         />
                                     </div>
 
@@ -122,16 +256,17 @@
                                         <label class="block text-sm font-medium text-gray-700">Date de naissance</label>
                                         <input 
                                             type="date" 
+                                            name="date_naissance"
                                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                            value="1990-01-01"
+                                            value="<?php echo htmlspecialchars($user['birthdate'] ?? ''); ?>"
                                         />
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700">Nationalité</label>
-                                        <select class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2">
-                                            <option>Française</option>
-                                            <option>Autre</option>
+                                        <select name="nationalite" class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2">
+                                            <option value="Française" <?php echo (isset($user['nationality']) && $user['nationality'] == 'Française') ? 'selected' : ''; ?>>Française</option>
+                                            <option value="Autre" <?php echo (isset($user['nationality']) && $user['nationality'] == 'Autre') ? 'selected' : ''; ?>>Autre</option>
                                         </select>
                                     </div>
 
@@ -139,8 +274,9 @@
                                         <label class="block text-sm font-medium text-gray-700">Email</label>
                                         <input 
                                             type="email" 
+                                            name="email"
                                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                            value="jean.dupont@email.com"
+                                            value="<?php echo htmlspecialchars($user['email'] ?? '');?>"
                                         />
                                     </div>
 
@@ -148,8 +284,9 @@
                                         <label class="block text-sm font-medium text-gray-700">Téléphone</label>
                                         <input 
                                             type="tel" 
+                                            name="telephone"
                                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                            value="06 12 34 56 78"
+                                            value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>"
                                         />
                                     </div>
                                 </div>
@@ -158,8 +295,9 @@
                                     <label class="block text-sm font-medium text-gray-700">Adresse</label>
                                     <input 
                                         type="text" 
+                                        name="adresse"
                                         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                        value="123 rue de la Paix"
+                                        value="<?php echo htmlspecialchars($user['address'] ?? ''); ?>"
                                     />
                                 </div>
 
@@ -168,8 +306,9 @@
                                         <label class="block text-sm font-medium text-gray-700">Code postal</label>
                                         <input 
                                             type="text" 
+                                            name="code_postal"
                                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                            value="75000"
+                                            value="<?php echo htmlspecialchars($user['postal_code'] ?? ''); ?>"
                                         />
                                     </div>
 
@@ -177,8 +316,9 @@
                                         <label class="block text-sm font-medium text-gray-700">Ville</label>
                                         <input 
                                             type="text" 
+                                            name="ville"
                                             class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                            value="Paris"
+                                            value="<?php echo htmlspecialchars($user['city'] ?? '');?>"
                                         />
                                     </div>
                                 </div>
@@ -188,6 +328,18 @@
                                         Sauvegarder les modifications
                                     </button>
                                 </div>
+
+                                <?php if (isset($message_success)): ?>
+                                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                                        <?php echo $message_success; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (isset($message_error)): ?>
+                                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                        <?php echo $message_error; ?>
+                                    </div>
+                                <?php endif; ?>
                             </form>
                         </div>
                     </div>
@@ -196,13 +348,14 @@
                     <div class="bg-white rounded-lg shadow mt-6">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-700 mb-4">Sécurité</h3>
-                            <form class="space-y-6">
+                            <form class="space-y-6" method="POST">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Mot de passe actuel</label>
                                     <input 
                                         type="password" 
+                                        name="current_password"
                                         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                        placeholder="••••••••"
+                                        required
                                     />
                                 </div>
 
@@ -210,8 +363,9 @@
                                     <label class="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
                                     <input 
                                         type="password" 
+                                        name="new_password"
                                         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                        placeholder="••••••••"
+                                        required
                                     />
                                 </div>
 
@@ -219,16 +373,33 @@
                                     <label class="block text-sm font-medium text-gray-700">Confirmer le nouveau mot de passe</label>
                                     <input 
                                         type="password" 
+                                        name="confirm_password"
                                         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                        placeholder="••••••••"
+                                        required
                                     />
                                 </div>
 
                                 <div class="flex justify-end pt-4">
-                                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                    <button 
+                                        type="submit" 
+                                        name="update_password" 
+                                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    >
                                         Modifier le mot de passe
                                     </button>
                                 </div>
+
+                                <?php if (isset($password_success)): ?>
+                                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                                        <?php echo $password_success; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (isset($password_error)): ?>
+                                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                        <?php echo $password_error; ?>
+                                    </div>
+                                <?php endif; ?>
                             </form>
                         </div>
                     </div>

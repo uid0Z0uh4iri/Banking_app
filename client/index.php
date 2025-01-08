@@ -105,24 +105,18 @@ $balances = $user->getAccountBalances();
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                <button class="flex items-center justify-center space-x-2 p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                <a href="virement.php">
-                <i data-lucide="send" class="w-5 h-5"></i>
-                <span>Nouveau virement</span>
+                <a href="virement.php" class="flex items-center justify-center p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <i data-lucide="send" class="w-5 h-5 mr-2"></i>
+                    <span class="text-center">Nouveau virement</span>
                 </a>
-                </button>
-                <button class="flex items-center justify-center space-x-2 p-4 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                    <a href="alimenter.php">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                    <span>Alimenter compte</span>
-                    </a>
-                </button>
-                <button class="flex items-center justify-center space-x-2 p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
-                <a href="retrait.php">
-                <i data-lucide="users" class="w-5 h-5"></i>
-                <span>Extraire de l'argent</span>
+                <a href="alimenter.php" class="flex items-center justify-center p-4 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
+                    <span class="text-center">Alimenter compte</span>
                 </a>
-                </button>
+                <a href="retrait.php" class="flex items-center justify-center p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                    <i data-lucide="users" class="w-5 h-5 mr-2"></i>
+                    <span class="text-center">Extraire de l'argent</span>
+                </a>
             </div>
 
             <!-- Recent Transactions -->
