@@ -1,18 +1,16 @@
-<?php
-// db.php : Connexion à la base de données
 
-// Check if the class is already defined
-if (!class_exists('Database')) {
+<?php
+// db.php : Connexion a la base de données
     class Database {
         private $host = 'localhost';   
-        private $dbname = 'banque';   // Nom de la base de données
-        private $username = 'root';    // Nom d'utilisateur pour la base de données
-        private $password = '';        // Mot de passe pour la base de données
+        private $dbname = 'banque';   
+        private $username = 'root';    
+        private $password = '';        
         private $conn;
 
         public function connect() {
             try {
-                // Crée une nouvelle connexion PDO
+                // Cree une nouvelle connexion PDO
                 $this->conn = new PDO("mysql:host=$this->host;dbname=$this->dbname", $this->username, $this->password);
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 return $this->conn;  // Retourne la connexion
@@ -22,5 +20,5 @@ if (!class_exists('Database')) {
             }
         }
     }
-}
+
 ?>

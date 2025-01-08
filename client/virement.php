@@ -1,3 +1,24 @@
+<?php 
+session_start();
+
+require_once '../config/db.php';
+require_once '../classes/User.php';
+
+// Verifier si l'utilisateur est connecte
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../auth.php');
+    exit();
+}
+
+// Initialiser la connexion et l'objet User
+$db = new Database();
+$pdo = $db->connect();
+$user = new User($pdo);
+
+// Recuperer les soldes des comptes
+$balances = $user->getAccountBalances();
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,30 +33,30 @@
         <!-- Sidebar (même contenu que précédemment) -->
         <div class="w-64 bg-white shadow-lg">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">Ma Banque</h1>
+                <h1 class="text-2xl font-bold text-blue-600">BanKa2KA</h1>
             </div>
             <nav class="mt-6">
-                <a href="index.html" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
+                <a href="index.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="wallet"></i>
                     <span>Tableau de bord</span>
                 </a>
-                <a href="mcompte.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="compte.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="credit-card"></i>
                     <span>Mes comptes</span>
                 </a>
-                <a href="virement.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="virement.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <a href="benificier.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3  text-gray-600 hover:bg-gray-50">
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
-                </a>
-                <a href="historique.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                </a> -->
+                <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
                 </a>
-                <a href="profeil.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="profil.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="user"></i>
                     <span>Profil</span>
                 </a>
@@ -44,23 +65,23 @@
 
         <!-- Main Content -->
         <div class="flex-1 p-8">
-            <h2 class="text-2xl font-bold text-gray-800">Effectuer un virement</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Effectuer un transfert</h2>
             
             <div class="bg-white p-6 rounded-lg shadow mt-6">
                 <form class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Compte à débiter</label>
-                        <select class="mt-1 block w-full rounded-md border border-gray-300 p-2">
-                            <option>Compte Courant - FR76 1234 5678 9012</option>
-                            <option>Compte Épargne - FR76 9876 5432 1098</option>
+                        <select id="debitAccount" class="mt-1 block w-full rounded-md border border-gray-300 p-2">
+                            <option value="courant">Compte Courant - <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</option>
+                            <option value="epargne">Compte Épargne - <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Bénéficiaire</label>
-                        <select class="mt-1 block w-full rounded-md border border-gray-300 p-2">
-                            <option>John Doe - FR76 1111 2222 3333</option>
-                            <option>Jane Smith - FR76 4444 5555 6666</option>
+                        <label class="block text-sm font-medium text-gray-700">Compte à bénéficier</label>
+                        <select id="creditAccount" class="mt-1 block w-full rounded-md border border-gray-300 p-2">
+                            <option value="courant">Compte Courant - <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</option>
+                            <option value="epargne">Compte Épargne - <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</option>
                         </select>
                     </div>
 
@@ -68,13 +89,13 @@
                         <label class="block text-sm font-medium text-gray-700">Montant</label>
                         <div class="mt-1 relative rounded-md shadow-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm">€</span>
+                                <span class="text-gray-500 sm:text-sm">MAD</span>
                             </div>
                             <input 
                                 type="number" 
                                 min="0.01" 
                                 step="0.01"
-                                class="pl-7 block w-full rounded-md border border-gray-300 p-2" 
+                                class="pl-[60px] block w-full rounded-md border border-gray-300 p-2" 
                                 placeholder="0.00"
                             />
                         </div>
@@ -115,9 +136,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        lucide.createIcons();
-    </script>
+    <script src="../assets/js/virement.js"></script>
 </body>
 </html>

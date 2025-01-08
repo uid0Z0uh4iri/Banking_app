@@ -1,3 +1,24 @@
+<?php 
+session_start();
+
+require_once '../config/db.php';
+require_once '../classes/User.php';
+
+// Verifier si l'utilisateur est connecte
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../auth.php');
+    exit();
+}
+
+// Initialiser la connexion et l'objet User
+$db = new Database();
+$pdo = $db->connect();
+$user = new User($pdo);
+
+// Recuperer les soldes des comptes
+$balances = $user->getAccountBalances();
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,30 +33,30 @@
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">Ma Banque</h1>
+                <h1 class="text-2xl font-bold text-blue-600">BanKa2KA</h1>
             </div>
             <nav class="mt-6">
-                <a href="index.html" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
+                <a href="index.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="wallet"></i>
                     <span>Tableau de bord</span>
                 </a>
-                <a href="mcompte.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="compte.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
                     <i data-lucide="credit-card"></i>
                     <span>Mes comptes</span>
                 </a>
-                <a href="virement.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="virement.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <a href="benificier.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
-                </a>
-                <a href="historique.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                </a> -->
+                <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
                 </a>
-                <a href="profeil.html" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <a href="profil.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="user"></i>
                     <span>Profil</span>
                 </a>
@@ -46,106 +67,109 @@
         <div class="flex-1 p-8">
             <h2 class="text-2xl font-bold text-gray-800">Mes Comptes</h2>
 
-            <!-- Compte Courant -->
-            <div class="mt-6 bg-white rounded-lg shadow">
-                <div class="p-6">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="text-xl font-semibold text-gray-800">Compte Courant</h3>
-                            <p class="text-sm text-gray-500">N° FR76 1234 5678 9012</p>
+            <!-- Grid container pour les comptes -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Compte Courant -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800">Compte Courant</h3>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-bold text-gray-900"> <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</p>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    Actif
+                                </span>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-2xl font-bold text-gray-900">€2,450.50</p>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                Actif
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 grid grid-cols-2 gap-4">
-                        <button class="flex items-center justify-center p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
+                        
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <button class="flex items-center justify-center p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
+                            <a href="alimenter.php">
                             <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
                             Alimenter
-                        </button>
-                        <button class="flex items-center justify-center p-3 text-purple-600 border border-purple-600 rounded-lg hover:bg-purple-50">
-                            <i data-lucide="download" class="w-5 h-5 mr-2"></i>
-                            Relevé
-                        </button>
-                    </div>
+                            </a>
+                            </button>
+                            <button class="flex items-center justify-center p-3 text-purple-600 border border-purple-600 rounded-lg hover:bg-purple-50">
+                                <i data-lucide="download" class="w-5 h-5 mr-2"></i>
+                                Relevé
+                            </button>
+                        </div>
 
-                    <div class="mt-6">
-                        <h4 class="font-medium text-gray-700">Détails du compte</h4>
-                        <dl class="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                            <div>
-                                <dt class="text-sm text-gray-500">Date d'ouverture</dt>
-                                <dd class="mt-1 text-sm text-gray-900">15 janvier 2020</dd>
-                            </div>
-                            <div>
-                                <dt class="text-sm text-gray-500">Plafond de retrait</dt>
-                                <dd class="mt-1 text-sm text-gray-900">1000€ / jour</dd>
-                            </div>
-                            <div>
-                                <dt class="text-sm text-gray-500">Découvert autorisé</dt>
-                                <dd class="mt-1 text-sm text-gray-900">500€</dd>
-                            </div>
-                            <div>
-                                <dt class="text-sm text-gray-500">Frais de tenue</dt>
-                                <dd class="mt-1 text-sm text-gray-900">2€ / mois</dd>
-                            </div>
-                        </dl>
+                        <div class="mt-6">
+                            <h4 class="font-medium text-gray-700">Détails du compte</h4>
+                            <dl class="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                                <div>
+                                    <dt class="text-sm text-gray-500">Date d'ouverture</dt>
+                                    <dd class="mt-1 text-sm text-gray-900"> <?php echo htmlspecialchars(ucfirst($user->getdate())); ?></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm text-gray-500">Plafond de retrait</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">1000 MAD / jour</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm text-gray-500">Découvert autorisé</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">500 MAD</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm text-gray-500">Frais de tenue</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">20 MAD / mois</dd>
+                                </div>
+                            </dl>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Compte Épargne -->
-            <div class="mt-6 bg-white rounded-lg shadow">
-                <div class="p-6">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="text-xl font-semibold text-gray-800">Compte Épargne</h3>
-                            <p class="text-sm text-gray-500">N° FR76 9876 5432 1098</p>
+                <!-- Compte Épargne -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800">Compte Épargne</h3>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-bold text-gray-900"> <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</p>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    Actif
+                                </span>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-2xl font-bold text-gray-900">€15,750.20</p>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                Actif
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 grid grid-cols-2 gap-4">
-                        <button onclick="toggleModal('epargne')" class="flex items-center justify-center p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
-                            <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
-                            Alimenter
-                        </button>
                         
-                        <!-- Dans le Compte Épargne -->
-                        <button onclick="toggleModal('epargne')" class="flex items-center justify-center p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
-                            <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
-                            Alimenter
-                        </button>
-                    </div>
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <button onclick="toggleModal('epargne')" class="flex items-center justify-center p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
+                                <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
+                                Alimenter
+                            </button>
+                            
+                            <!-- Dans le Compte Épargne -->
+                            <button onclick="toggleModal('epargne')" class="flex items-center justify-center p-3 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50">
+                                <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
+                                Alimenter
+                            </button>
+                        </div>
 
-                    <div class="mt-6">
-                        <h4 class="font-medium text-gray-700">Détails du compte</h4>
-                        <dl class="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                            <div>
-                                <dt class="text-sm text-gray-500">Date d'ouverture</dt>
-                                <dd class="mt-1 text-sm text-gray-900">20 mars 2020</dd>
-                            </div>
-                            <div>
-                                <dt class="text-sm text-gray-500">Taux d'intérêt</dt>
-                                <dd class="mt-1 text-sm text-gray-900">2.5% annuel</dd>
-                            </div>
-                            <div>
-                                <dt class="text-sm text-gray-500">Plafond</dt>
-                                <dd class="mt-1 text-sm text-gray-900">50 000€</dd>
-                            </div>
-                            <div>
-                                <dt class="text-sm text-gray-500">Frais de tenue</dt>
-                                <dd class="mt-1 text-sm text-gray-900">Gratuit</dd>
-                            </div>
-                        </dl>
+                        <div class="mt-6">
+                            <h4 class="font-medium text-gray-700">Détails du compte</h4>
+                            <dl class="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                                <div>
+                                    <dt class="text-sm text-gray-500">Date d'ouverture</dt>
+                                    <dd class="mt-1 text-sm text-gray-900"> <?php echo htmlspecialchars(ucfirst($user->getdate())); ?></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm text-gray-500">Taux d'intérêt</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">2.5% annuel</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm text-gray-500">Plafond</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">500 000 MAD</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm text-gray-500">Frais de tenue</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">Gratuit</dd>
+                                </div>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,270 +1,183 @@
-
 <!DOCTYPE html>
-<html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Dashboard
-  </title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
- 
- </head>
- <body class="bg-gray-100 font-sans antialiased">
-  <div class="flex">
-   <!-- Sidebar -->
-   <div class="w-64 bg-blue-900 text-white min-h-screen">
-    <div class="p-4 flex items-center">
-     <span class="ml-3 text-xl font-semibold">
-      <span class="text-blue-200">Admin</span> Dashbord
-     </span>
-    </div>
-    <nav class="mt-5">
-        <div class="mt-5">
-            <a class="flex items-center p-3 hover:bg-blue-800 rounded-lg" href="">
-            <!-- <i class="fas fa-book"></i> -->
-            <i class="fas fa-home"></i>
-            </i>
-            <span class="ml-3">
-            bibliotheque
-            </span>
-            </a>
-        </div>
-        
-     <div class="mt-5">
-  
-      <a class="flex items-center p-3 hover:bg-blue-800 rounded-lg" href="">
-        
-       <i class="fas fa-book"></i>
-       </i>
-       <span class="ml-3">
-        Gestion des Livres
-       </span>
-      </a>
-     </div>
-     <div class="mt-5">
-      <a class="flex items-center p-3 hover:bg-blue-800 rounded-lg" href="">
-       <!-- <i class="fas fa-edit"> -->
-       <i class="fas fa-filter"></i>
-       </i>
-       <span class="ml-3">
-        Gestion des categories 
-       </span>
-      </a>
-   
-     </div>
-     <div class="mt-5">
-      <a class="flex items-center p-3 hover:bg-blue-800 rounded-lg" href="">
-      <i class="fas fa-file-pdf"></i>
-       </i>
-       <span class="ml-3">
-        statistiques et rapports 
-       </span>
-      </a>
-   
-     </div>
-  
-        <div class="mt-5">
-        <a href="../logout.php" class="flex items-center p-3 hover:bg-blue-800 rounded-lg text-red-500 hover:text-red-400">
-            <i class="fas fa-sign-out-alt"></i>
-            <span class="ml-3">
-                Déconnexion
-            </span>
-        </a>
-        </div>
-    </nav>
-   </div>
-   <!-- Main Content -->
-   <div class="flex-1 p-6">
-    <div class="flex justify-between items-center mb-6">
-     <h1 class="text-2xl font-semibold text-blue-500">
-      Dashboard
-     </h1>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
-     <div class="bg-white p-4 rounded-lg shadow">
-      <div class="flex items-center justify-between">
-       <div>
-        <p class="text-gray-600">
-         Total des utilisateurs
-        </p>
-        <p class="text-2xl font-semibold text-blue-500">
-  
-        </p>
-       </div>
-       <i class="fas fa-user text-blue-500"></i>
-      </div>
-      <div class="mt-4">
-       <div class="h-2 bg-blue-500 rounded-full" style="width: 100%;">
-       </div>
-      </div>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow">
-      <div class="flex items-center justify-between">
-       <div>
-        <p class="text-gray-600">Total des livres</p>
-        <p class="text-2xl font-semibold text-blue-500">
-            </p>
-       </div>
-       <i class="fas fa-university text-blue-500"></i>
-    
-      </div>
-      <div class="mt-4">
-       <div class="h-2 bg-blue-500 rounded-full" style="width: 100%;"></div>
-      </div>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow">
-      <div class="flex items-center justify-between">
-       <div>
-        <p class="text-gray-600">
-         Categories
-        </p>
-        <p class="text-2xl font-semibold text-blue-500">
-         
-        </p>
-       </div>
-      
-       <i class="fas fa-bookmark text-blue-500"></i>
-       </i>
-      </div>
-      <div class="mt-4">
-       <div class="h-2 bg-blue-500 rounded-full" style="width: 100%;">
-       </div>
-      </div>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow">
-      <div class="flex items-center justify-between">
-       <div>
-        <p class="text-gray-600">
-         Livres réservé
-        </p>
-        <p class="text-2xl font-semibold text-blue-500">
-         
-        </p>
-       </div>
-     
-       <i class="fas fa-book text-blue-500"></i>
-       </i>
-      </div>
-      <div class="mt-4">
-       <div class="h-2 bg-blue-500 rounded-full" style="width: 100%;">
-       </div>
-      </div>
-     </div>
-     <div class="bg-white p-4 rounded-lg shadow">
-      <div class="flex items-center justify-between">
-       <div>
-        <p class="text-gray-600">
-         Livres emprientés
-        </p>
-        <p class="text-2xl font-semibold text-blue-500">
-         
-        </p>
-       </div>
-       
-       <i class="fas fa-book-open text-blue-500"></i>
-       </i>
-      </div>
-      <div class="mt-4">
-       <div class="h-2 bg-blue-500 rounded-full" style="width: 100%;">
-       </div>
-      </div>
-     </div>
-  
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="flex min-h-screen relative">
+            <!-- Bouton Menu Mobile -->
+            <button 
+                onclick="toggleSidebar()"
+                class="lg:hidden fixed top-4 left-4 z-50 bg-gray-900 text-white p-2 rounded-lg"
+            >
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
 
+            <!-- Sidebar avec classe pour contrôler la visibilité -->
+            <div id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 lg:relative lg:flex w-64 bg-gray-900 transition-transform duration-200 ease-in-out z-30">
+                <div class="flex flex-col h-full">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <h1 class="text-2xl font-bold text-white">Admin Panel</h1>
+                            <button onclick="toggleSidebar()" class="lg:hidden text-white">
+                                <i data-lucide="x" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                        <p class="text-gray-400 text-sm">Gestion bancaire</p>
+                    </div>
 
-    </div>
-    <div class="bg-white p-6 rounded-lg shadow mb-6">
-     <h2 class="text-xl font-semibold mb-4">Utilisateurs</h2>
-     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Nom
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Email
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Role
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date d'inscription
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">
-                                
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">
-                                
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            
-                               
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                       
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex flex-col space-y-2">
-                                <div class="flex space-x-2">
-                                    <form method="GET" action="edit_user.php" style="display: inline;">
-                                        <input type="hidden" name="id" value="">
-                                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
-                                            Modifier
-                                        </button>
-                                    </form>
+                    <!-- Navigation -->
+                    <nav class="mt-6 flex-grow">
+                        <a href="#" class="flex items-center w-full px-6 py-3 text-white bg-gray-800">
+                            <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="clients.php" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+                            <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                            <span>Clients</span>
+                        </a>
+                        <a href="compte.html" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+                            <i data-lucide="credit-card" class="w-5 h-5 mr-3"></i>
+                            <span>Comptes</span>
+                        </a>
+                        <a href="transactions.html" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+                            <i data-lucide="repeat" class="w-5 h-5 mr-3"></i>
+                            <span>Transactions</span>
+                        </a>
+                        <a href="#" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+                            <i data-lucide="bell" class="w-5 h-5 mr-3"></i>
+                            <span>Notifications</span>
+                        </a>
+                        <a href="#" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+                            <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                            <span>Paramètres</span>
+                        </a>
+                    </nav>
 
-                                    
-                                        <form method="POST" action="delete_user.php" style="display: inline;">
-                                            <input type="hidden" name="id" value="">
-                                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded" 
-                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
-                                                Supprimer
-                                            </button>
-                                        </form>
-                                    
+                    <!-- Profil Admin avec Déconnexion -->
+                    <div class="border-t border-gray-800 p-6">
+                        <div class="relative">
+                            <button 
+                                onclick="toggleProfileMenu()"
+                                class="flex items-center w-full text-white hover:bg-gray-800 rounded-lg p-2"
+                            >
+                                <img src="/api/placeholder/32/32" alt="Admin" class="w-8 h-8 rounded-full">
+                                <div class="ml-3 flex-grow">
+                                    <p class="text-sm font-medium">Admin</p>
+                                    <p class="text-xs text-gray-400">admin@banque.fr</p>
                                 </div>
-                                
-                                
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir changer le rôle de cet utilisateur ?');">
-                                        <input type="hidden" name="userId" value="">
-                                        <select name="newRole" onchange="this.form.submit()" class="w-22 bg-gray-100 border border-gray-300 rounded px-1 py-1">
-                                            <option value="authenticated">Authenticated</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                    </form>
-                               
-                            </div>
-                        </td>
-                    </tr>
-               
-            </tbody>
-        </table>
-    </div>
-    </div>
-   </div>
-  </div>
-  <!-- Notification -->
-  <div id="notification" class="fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg transform transition-all duration-300 opacity-0 translate-y-[-100%]">
-  </div>
+                                <i data-lucide="chevron-up" class="w-5 h-5 transform transition-transform duration-200" id="profileChevron"></i>
+                            </button>
 
-  
- </body>
+                            <!-- Menu Profil -->
+                            <div id="profileMenu" class="absolute bottom-full left-0 w-full mb-2 bg-gray-800 rounded-lg shadow-lg hidden">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 rounded-t-lg">
+                                    <i data-lucide="user" class="w-4 h-4 inline-block mr-2"></i>
+                                    Mon profil
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                                    <i data-lucide="settings" class="w-4 h-4 inline-block mr-2"></i>
+                                    Paramètres
+                                </a>
+                                <a 
+                                    href="javascript:logout()" 
+                                    class="block px-4 py-2 text-sm text-red-400 hover:bg-gray-700 rounded-b-lg"
+                                >
+                                    <i data-lucide="log-out" class="w-4 h-4 inline-block mr-2"></i>
+                                    Déconnexion
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="flex-1 flex flex-col">
+                <!-- Top Navigation -->
+                <div class="bg-white shadow">
+                    <div class="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+                        <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
+                        <div class="flex items-center space-x-4">
+                            <button class="p-2 text-gray-400 hover:text-gray-600">
+                                <i data-lucide="search" class="w-5 h-5"></i>
+                            </button>
+                            <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+                                <i data-lucide="bell" class="w-5 h-5"></i>
+                                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Content avec Responsive -->
+                <div class="p-4 sm:p-6 lg:p-8 flex-grow">
+                    <!-- Statistiques -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                        <!-- ... Cards statistiques existantes ... -->
+                    </div>
+
+                    <!-- Grilles responsive -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6">
+                        <!-- ... Rest of your content ... -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay pour mobile -->
+        <div 
+        id="sidebarOverlay"
+        onclick="toggleSidebar()"
+        class="fixed inset-0 bg-black bg-opacity-50 lg:hidden hidden z-20"
+    ></div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialisation des icônes
+        lucide.createIcons();
+
+        // Toggle Sidebar Mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Toggle Profile Menu
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profileMenu');
+            const chevron = document.getElementById('profileChevron');
+            
+            menu.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Fonction de déconnexion
+        function logout() {
+            // Afficher un modal de confirmation
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                // Rediriger vers la page de login
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Fermer le menu profil si on clique ailleurs
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('profileMenu');
+            const profileButton = event.target.closest('button');
+            
+            if (!profileButton && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+                document.getElementById('profileChevron').classList.remove('rotate-180');
+            }
+        });
+    </script>
+</body>
 </html>
