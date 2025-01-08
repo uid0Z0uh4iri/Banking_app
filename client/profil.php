@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
     $current_password = $_POST['current_password'] ?? '';
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
-    $user_id = 1; // Normalement ghadi takhdu men session
+    $user_id = $_SESSION['user_id']; // Correction ici
 
     try {
         // Vérifier si le mot de passe actuel est correct
@@ -62,7 +62,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $postal_code = $_POST['code_postal'] ?? '';
     $city = $_POST['ville'] ?? '';
     
-    $user_id = 1; // Normalement ghadi takhdu men session
+    $user_id = $_SESSION['user_id']; // Correction ici
 
     try {
         $sql = "UPDATE users SET 
