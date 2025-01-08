@@ -11,8 +11,7 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../auth.php');
     exit();
 }
-// Recuperer les soldes des comptes
-$balances = $user->getAccountBalances();
+
 
 // Initialiser la connexion et l'objet User
 $db = new Database();
@@ -32,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['success'] = "Votre compte a été alimenté avec succès";
         } else {
             if ($compte_type === 'epargne') {
-                $_SESSION['error'] = "Erreur: Le montant minimum pour un compte epargne est de " . number_format(CompteEpargne::MONTANT_MINIMUM, 0, ',', ' ') . " FCFA";
+                $_SESSION['error'] = "Erreur: Le montant minimum pour un compte epargne est de " . number_format(CompteEpargne::MONTANT_MINIMUM, 0, ',', ' ') . " MAD";
             } else {
                 $_SESSION['error'] = "Une erreur est survenue lors de l'alimentation du compte";
             }
@@ -43,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: alimenter.php');
     exit();
 }
+// Recuperer les soldes des comptes
+$balances = $user->getAccountBalances();
 
 
 
@@ -95,8 +96,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label class="block text-sm font-medium text-gray-700 mb-1">Compte à alimenter *</label>
                             <select name="compte" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">Sélectionnez un compte</option>
-                                <option value="courant">Compte Courant -  <span> <?php echo number_format($balances['courant'], 2, ',', ' '); ?> FCFA</span></option>
-                                <option value="epargne">Compte Épargne - <span> <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> FCFA</span></option>
+                                <option value="courant">Compte Courant -  <span> <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</span></option>
+                                <option value="epargne">Compte Épargne - <span> <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</span></option>
                             </select>
                         </div>
 
@@ -105,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label class="block text-sm font-medium text-gray-700 mb-1">Montant *</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3  flex items-center pointer-events-none">
-                                    <span class="text-gray-500">FCFA</span>
+                                    <span class="text-gray-500">MAD</span>
                                 </div>
                                 <input 
                                     type="number" 
@@ -117,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     placeholder="0.00"
                                 >
                             </div>
-                            <p class="mt-1 text-sm text-gray-500">Montant minimum : 0.01 FCFA</p>
+                            <p class="mt-1 text-sm text-gray-500">Montant minimum : 0.01 MAD</p>
                         </div>
 
                         <!-- Message de confirmation -->

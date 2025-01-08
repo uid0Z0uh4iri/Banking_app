@@ -13,3 +13,16 @@
             sidebar.classList.toggle('hidden');
         });
     });
+    document.querySelector('.burger-button').addEventListener('click', function(e) {
+        e.stopPropagation();
+        const menu = document.querySelector('.menu-options');
+        menu.classList.toggle('hidden');
+    });
+
+    // Fermer le menu si on clique en dehors
+    document.addEventListener('click', function(e) {
+        const menu = document.querySelector('.menu-options');
+        if (!menu.contains(e.target) && !document.querySelector('.burger-button').contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });

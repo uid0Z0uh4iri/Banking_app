@@ -33,7 +33,7 @@ $balances = $user->getAccountBalances();
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">Ma Banque</h1>
+                <h1 class="text-2xl font-bold text-blue-600">BanKa2KA</h1>
             </div>
             <nav class="mt-6">
                 <a href="index.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
@@ -102,19 +102,19 @@ $balances = $user->getAccountBalances();
                             <dl class="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                                 <div>
                                     <dt class="text-sm text-gray-500">Date d'ouverture</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">15 janvier 2020</dd>
+                                    <dd class="mt-1 text-sm text-gray-900"> <?php echo htmlspecialchars(ucfirst($user->getdate())); ?></dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Plafond de retrait</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">1000€ / jour</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">1000 MAD / jour</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Découvert autorisé</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">500€</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">500 MAD</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Frais de tenue</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">2€ / mois</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">20 MAD / mois</dd>
                                 </div>
                             </dl>
                         </div>
@@ -154,7 +154,7 @@ $balances = $user->getAccountBalances();
                             <dl class="mt-4 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                                 <div>
                                     <dt class="text-sm text-gray-500">Date d'ouverture</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">20 mars 2020</dd>
+                                    <dd class="mt-1 text-sm text-gray-900"> <?php echo htmlspecialchars(ucfirst($user->getdate())); ?></dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Taux d'intérêt</dt>
@@ -162,7 +162,7 @@ $balances = $user->getAccountBalances();
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Plafond</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">50 000€</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">500 000 MAD</dd>
                                 </div>
                                 <div>
                                     <dt class="text-sm text-gray-500">Frais de tenue</dt>
