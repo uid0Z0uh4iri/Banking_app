@@ -65,10 +65,10 @@ $balances = $user->getAccountBalances();
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
-                </a>
+                </a> -->
                 <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>

@@ -1,3 +1,24 @@
+<?php 
+session_start();
+
+require_once '../config/db.php';
+require_once '../classes/User.php';
+
+// Verifier si l'utilisateur est connecte
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../auth.php');
+    exit();
+}
+
+// Initialiser la connexion et l'objet User
+$db = new Database();
+$pdo = $db->connect();
+$user = new User($pdo);
+
+// Recuperer les soldes des comptes
+$balances = $user->getAccountBalances();
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -27,10 +48,10 @@
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <a href="benificier.php" class="flex items-center w-full p-4 space-x-3  text-gray-600 hover:bg-gray-50">
+                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3  text-gray-600 hover:bg-gray-50">
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
-                </a>
+                </a> -->
                 <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
@@ -51,8 +72,8 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Compte à débiter</label>
                         <select class="mt-1 block w-full rounded-md border border-gray-300 p-2">
-                            <option>Compte Courant - FR76 1234 5678 9012</option>
-                            <option>Compte Épargne - FR76 9876 5432 1098</option>
+                            <option>Compte Courant - <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</option>
+                            <option>Compte Épargne - <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</option>
                         </select>
                     </div>
 
