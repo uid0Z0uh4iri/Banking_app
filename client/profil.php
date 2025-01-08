@@ -3,8 +3,53 @@
 require_once('../config/database.php');
 session_start();
 
-// Logic dial update
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Logic dial update password (mettre ce bloc en PREMIER)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
+    $current_password = $_POST['current_password'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+    $user_id = 1; // Normalement ghadi takhdu men session
+
+    try {
+        // Vérifier si le mot de passe actuel est correct
+        $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
+        $stmt->execute([$user_id]);
+        $user = $stmt->fetch();
+
+        if (!password_verify($current_password, $user['password'])) {
+            $_SESSION['password_error'] = "Le mot de passe actuel est incorrect";
+        } 
+        elseif ($new_password !== $confirm_password) {
+            $_SESSION['password_error'] = "Les nouveaux mots de passe ne correspondent pas";
+        }
+        elseif (strlen($new_password) < 8) {
+            $_SESSION['password_error'] = "Le nouveau mot de passe doit contenir au moins 8 caractères";
+        }
+        else {
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+            
+            // Mise à jour uniquement du mot de passe
+            $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :user_id");
+            $stmt->execute([
+                'password' => $hashed_password,
+                'user_id' => $user_id
+            ]);
+
+            $_SESSION['password_success'] = "Votre mot de passe a été mis à jour avec succès";
+        }
+
+        header('Location: profil.php');
+        exit();
+
+    } catch(PDOException $e) {
+        $_SESSION['password_error'] = "Erreur lors de la mise à jour du mot de passe: " . $e->getMessage();
+        header('Location: profil.php');
+        exit();
+    }
+}
+
+// Logic dial update profile (mettre ce bloc APRÈS)
+elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Récupération des données du formulaire
     $civility = $_POST['civility'] ?? '';
     $lastname = $_POST['nom'] ?? '';
@@ -62,9 +107,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $message_success = $_SESSION['message_success'] ?? null;
 $message_error = $_SESSION['message_error'] ?? null;
 
+// Ajouter avec les autres récupérations de messages
+$password_success = $_SESSION['password_success'] ?? null;
+$password_error = $_SESSION['password_error'] ?? null;
+
 // Suppression des messages de la session après les avoir récupérés
 unset($_SESSION['message_success']);
 unset($_SESSION['message_error']);
+
+// Ajouter avec les autres unset
+unset($_SESSION['password_success']);
+unset($_SESSION['password_error']);
 
 // Récupération des données actuelles de l'utilisateur
 try {
@@ -295,13 +348,14 @@ try {
                     <div class="bg-white rounded-lg shadow mt-6">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-700 mb-4">Sécurité</h3>
-                            <form class="space-y-6">
+                            <form class="space-y-6" method="POST">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Mot de passe actuel</label>
                                     <input 
                                         type="password" 
+                                        name="current_password"
                                         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                        placeholder="••••••••"
+                                        required
                                     />
                                 </div>
 
@@ -309,8 +363,9 @@ try {
                                     <label class="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
                                     <input 
                                         type="password" 
+                                        name="new_password"
                                         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                        placeholder="••••••••"
+                                        required
                                     />
                                 </div>
 
@@ -318,16 +373,33 @@ try {
                                     <label class="block text-sm font-medium text-gray-700">Confirmer le nouveau mot de passe</label>
                                     <input 
                                         type="password" 
+                                        name="confirm_password"
                                         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                                        placeholder="••••••••"
+                                        required
                                     />
                                 </div>
 
                                 <div class="flex justify-end pt-4">
-                                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                    <button 
+                                        type="submit" 
+                                        name="update_password" 
+                                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    >
                                         Modifier le mot de passe
                                     </button>
                                 </div>
+
+                                <?php if (isset($password_success)): ?>
+                                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                                        <?php echo $password_success; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (isset($password_error)): ?>
+                                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                        <?php echo $password_error; ?>
+                                    </div>
+                                <?php endif; ?>
                             </form>
                         </div>
                     </div>
