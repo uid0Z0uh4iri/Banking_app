@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 07, 2025 at 08:38 AM
+-- Generation Time: Jan 08, 2025 at 03:05 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -74,16 +74,32 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `role` varchar(100) NOT NULL DEFAULT 'user',
-  `status` varchar(20) DEFAULT 'active'
+  `status` varchar(255) DEFAULT NULL,
+  `civility` enum('M.','Mme') DEFAULT NULL,
+  `firstname` varchar(100) DEFAULT NULL,
+  `lastname` varchar(100) DEFAULT NULL,
+  `birthdate` date DEFAULT NULL,
+  `nationality` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `postal_code` varchar(10) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `profile_pic`, `created_at`, `updated_at`, `role`, `status`) VALUES
-(1, 'admin', 'admin@banque.com', 'admin', NULL, '2025-01-06 10:38:02', '2025-01-06 10:38:02', 'admin', 'active'),
-(3, 'ayoub', 'ayoub@gmail.com', '$2y$10$6GG7IRsGZPFzPiw0ftfll.Sn.Ht/Qzk9bFI7jle92/IcxHzyHFyNe', NULL, '2025-01-06 13:25:09', '2025-01-06 13:25:09', 'user', 'active');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `profile_pic`, `created_at`, `updated_at`, `role`, `status`, `civility`, `firstname`, `lastname`, `birthdate`, `nationality`, `phone`, `address`, `postal_code`, `city`) VALUES
+(1, 'admin', 'admin@banque.com', 'admin', NULL, '2025-01-06 10:38:02', '2025-01-08 11:02:58', 'admin', NULL, 'M.', 'simo', 'zouhairi', '2001-01-01', 'Française', '64654564', '654654', '654', '64654654cdsqsqsdqsd'),
+(3, 'yass', 'ayoub@gmail.com', '$2y$10$6GG7IRsGZPFzPiw0ftfll.Sn.Ht/Qzk9bFI7jle92/IcxHzyHFyNe', NULL, '2025-01-06 13:25:09', '2025-01-07 22:39:27', 'user', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'dqsdsqdqsd', 'admin@example.comww', '$2y$10$46LuZA5e9ZF9FuKwnvR5MOxmsCrAXmI0oRJURoNQsSvylQWaVGwxG', NULL, '2025-01-07 10:25:11', '2025-01-08 14:12:51', 'user', 'inactive', 'M.', 'hmeeeedasa', 'ahmedwwwwssdddxxxx', '2000-10-10', 'Autre', '0505050505000', '05050 zsuzujz ', '10200', 'rbatssss'),
+(6, 'dqsdqsd', 'ww@ww.ww', '$2y$10$4utseyYvW4d5LayNtTF.NO1ypUsRzN5QmEcvoMRe3Qrbf3VB43dSq', NULL, '2025-01-07 10:26:44', '2025-01-07 10:26:44', 'user', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'wqs', 'admwwin@example.com', '$2y$10$QPJWM7FqMY4R3mD/NYWMFOBVb6LFEqtergpBzzselmjZ10odfyi4m', NULL, '2025-01-07 10:26:51', '2025-01-07 10:27:10', 'user', 'inactive', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 'sqsqsd', 'admixwxn@example.com', '$2y$10$gLPeK2tZEeR8gq6Crxh1FOJRaQ4eOLI0LveHXkK5ldU3WbsaHKNt2', NULL, '2025-01-07 10:26:56', '2025-01-07 10:27:11', 'user', 'inactive', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 'qksjjs', 'jkhkjsqhdjkqsdh@dqsdqsd.sd', '$2y$10$hEQlP39EboYHn1K3BBMNl.nwScNZZFBQENkCsSlAmSiWepL9lNHki', NULL, '2025-01-07 22:31:51', '2025-01-07 22:31:51', 'user', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 'simo@simo.com', 'simo@simo.com', '$2y$10$TZOxniLFE5.wmTuYwc2RZuPXDxhEU/8HUCUIxe4nZooXI4yhhfBfG', NULL, '2025-01-08 14:14:25', '2025-01-08 14:15:05', 'user', 'active', 'M.', 'simo', 'simo', '2000-01-01', 'Française', '0505050505', '050505', '0505', '0505'),
+(11, 'ayoub@ayoub.com', 'ayoub@ayoub.com', '$2y$10$qPHeqe2IYrrIX6ZVLnZR8.OWSAGMsYsHMnYmeyLL9UG1P1jdWhP5a', NULL, '2025-01-08 14:27:52', '2025-01-08 14:27:52', 'user', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -131,7 +147,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
@@ -154,21 +170,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
-
--- hadi bach nzido rows dial infos dial user
-
-USE banque;
-ALTER TABLE users
-ADD COLUMN civility ENUM('M.', 'Mme') DEFAULT NULL,
-ADD COLUMN firstname VARCHAR(100) DEFAULT NULL,
-ADD COLUMN lastname VARCHAR(100) DEFAULT NULL,
-ADD COLUMN birthdate DATE DEFAULT NULL,
-ADD COLUMN nationality VARCHAR(100) DEFAULT NULL,
-ADD COLUMN phone VARCHAR(20) DEFAULT NULL,
-ADD COLUMN address VARCHAR(255) DEFAULT NULL,
-ADD COLUMN postal_code VARCHAR(10) DEFAULT NULL,
-ADD COLUMN city VARCHAR(100) DEFAULT NULL;
-
-ALTER TABLE users ADD COLUMN status VARCHAR(20) DEFAULT '';
