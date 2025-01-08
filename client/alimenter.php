@@ -3,7 +3,8 @@ session_start();
 
 require_once '../config/db.php';
 require_once '../classes/User.php';
-require_once '../classes/Compte.php';
+require_once '../classes/CompteCourant.php';
+require_once '../classes/CompteEpargne.php';
 
 // Verifier si l'utilisateur est connecte
 if (!isset($_SESSION['user_id'])) {
@@ -11,22 +12,29 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+
 // Initialiser la connexion et l'objet User
 $db = new Database();
 $pdo = $db->connect();
 $user = new User($pdo);
-$compte = new Compte($pdo);
 
 // Traiter le formulaire d'alimentation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
-    $compte_type = htmlspecialchars($_POST['compte'] ?? '', ENT_QUOTES, 'UTF-8');
+    $compte_type = htmlspecialchars($_POST['compte'] ?? 'courant', ENT_QUOTES, 'UTF-8');
     
+    // Initialiser le bon type de compte en fonction de la selection
+    $compte = $compte_type === 'epargne' ? new CompteEpargne($pdo) : new CompteCourant($pdo);
+
     if ($montant && $compte_type) {
         if ($compte->alimenterCompte($_SESSION['user_id'], $montant, $compte_type)) {
             $_SESSION['success'] = "Votre compte a été alimenté avec succès";
         } else {
-            $_SESSION['error'] = "Une erreur est survenue lors de l'alimentation du compte";
+            if ($compte_type === 'epargne') {
+                $_SESSION['error'] = "Erreur: Le montant minimum pour un compte epargne est de " . number_format(CompteEpargne::MONTANT_MINIMUM, 0, ',', ' ') . " MAD";
+            } else {
+                $_SESSION['error'] = "Une erreur est survenue lors de l'alimentation du compte";
+            }
         }
     } else {
         $_SESSION['error'] = "Veuillez remplir tous les champs correctement";
@@ -34,9 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: alimenter.php');
     exit();
 }
-
 // Recuperer les soldes des comptes
 $balances = $user->getAccountBalances();
+
 
 
 ?>

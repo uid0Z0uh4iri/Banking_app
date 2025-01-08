@@ -11,7 +11,7 @@ class User {
     private $email;
     private $password;
     private $role;
-    private $profil_pic;
+    private $created_at;
 
     public function __construct($pdo)
     {
@@ -26,6 +26,7 @@ class User {
                 $this->name = $user['name'];
                 $this->email = $user['email'];
                 $this->role = $user['role'];
+                $this->created_at = $user['created_at'];
             }
         }
     }
@@ -36,6 +37,8 @@ class User {
     public function getName()  { return $this->name; }
     public function getEmail()  { return $this->email; }
     public function getRole()  { return $this->role; }
+    public function getdate() { return $this->created_at; }
+
 
     // login method
 

@@ -12,7 +12,7 @@ abstract class Compte {
         $this->pdo = $pdo;
     }
 
-    // Methodes abstraites
+    // methodes abstraites
     abstract protected function verifierMontant($montant): bool;
     abstract protected function verifierSolde($user_id, $account_type): bool;
 
@@ -62,7 +62,7 @@ abstract class Compte {
         }
     }
 
-    // Récupérer le solde d'un compte spécifique
+    // Recuperer le solde d'un compte specifique
     public function getBalance($user_id, $account_type = 'courant') {
         $stmt = $this->pdo->prepare("
             SELECT balance 

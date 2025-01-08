@@ -12,7 +12,7 @@
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg md:w-1/4 lg:w-64 hidden md:block">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">Ma Banque</h1>
+                <h1 class="text-2xl font-bold text-blue-600">BanKa2KA</h1>
             </div>
             <nav class="mt-6">
                 <a href="index.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
@@ -27,10 +27,10 @@
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
-                </a>
+                </a> -->
                 <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>

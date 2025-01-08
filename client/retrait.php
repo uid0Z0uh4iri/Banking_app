@@ -3,6 +3,8 @@ session_start();
 require_once '../config/db.php';
 require_once '../classes/User.php';
 require_once '../classes/Compte.php';
+require_once '../classes/CompteCourant.php';
+require_once '../classes/CompteEpargne.php';
 
 // Verifier si l'utilisateur est connecte
 if (!isset($_SESSION['user_id'])) {
@@ -10,22 +12,30 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+
+
 // Initialiser la connexion et l'objet User
 $db = new Database();
 $pdo = $db->connect();
 $user = new User($pdo);
-$compte = new Compte($pdo);
 
 // Traiter le formulaire de retrait
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
-    $compte_type = htmlspecialchars($_POST['compte'] ?? '', ENT_QUOTES, 'UTF-8');
+    $compte_type = htmlspecialchars($_POST['compte'] ?? 'courant', ENT_QUOTES, 'UTF-8');
     
+    // Initialiser le bon type de compte en fonction de la selection
+    $compte = $compte_type === 'epargne' ? new CompteEpargne($pdo) : new CompteCourant($pdo);
+
     if ($montant && $compte_type) {
         if ($compte->retraitCompte($_SESSION['user_id'], $montant, $compte_type)) {
-            $_SESSION['success'] = "Vous avez réussi votre retrait";
+            $_SESSION['success'] = "Retrait effectué avec succès";
         } else {
-            $_SESSION['error'] = "Une erreur est survenue lors du retrait du compte";
+            if ($compte_type === 'epargne') {
+                $_SESSION['error'] = "Erreur: Le solde minimum pour un compte épargne doit être maintenu à " . number_format(CompteEpargne::SOLDE_MINIMUM, 0, ',', ' ') . " MAD";
+            } else {
+                $_SESSION['error'] = "Une erreur est survenue lors du retrait";
+            }
         }
     } else {
         $_SESSION['error'] = "Veuillez remplir tous les champs correctement";
@@ -33,12 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: retrait.php');
     exit();
 }
-
 // Recuperer les soldes des comptes
 $balances = $user->getAccountBalances();
 
-?>
 
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>

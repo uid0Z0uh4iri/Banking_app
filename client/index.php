@@ -65,10 +65,10 @@ $balances = $user->getAccountBalances();
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="users"></i>
                     <span>Bénéficiaires</span>
-                </a>
+                </a> -->
                 <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
@@ -166,21 +166,7 @@ $balances = $user->getAccountBalances();
     <i data-lucide="menu" class="w-6 h-6"></i>
 </button>
 
-<script>
-    document.querySelector('.burger-button').addEventListener('click', function(e) {
-        e.stopPropagation();
-        const menu = document.querySelector('.menu-options');
-        menu.classList.toggle('hidden');
-    });
 
-    // Fermer le menu si on clique en dehors
-    document.addEventListener('click', function(e) {
-        const menu = document.querySelector('.menu-options');
-        if (!menu.contains(e.target) && !document.querySelector('.burger-button').contains(e.target)) {
-            menu.classList.add('hidden');
-        }
-    });
-</script>
-<script src ="/assets/js/main.js"></script>
+<script src ="../assets/js/main.js"></script>
 </body>
 </html>
