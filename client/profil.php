@@ -121,7 +121,7 @@ unset($_SESSION['password_error']);
 
 // Récupération des données actuelles de l'utilisateur
 try {
-    $user_id = $_POST['id']; // Normalement ghadi takhdu men session
+    $user_id = $_POST['user_id']; // Normalement ghadi takhdu men session
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch();
