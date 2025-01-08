@@ -2,18 +2,26 @@
 
 require_once __DIR__ . '/../config/db.php';
 
-class Compte {
-    private $pdo;
-    private $user_id;
-    private $account_type;
-    private $balance;
+abstract class Compte {
+    protected $pdo;
+    protected $user_id;
+    protected $account_type;
+    protected $balance;
 
     public function __construct($pdo) {
         $this->pdo = $pdo;
     }
 
+    // Methodes abstraites
+    abstract protected function verifierMontant($montant): bool;
+    abstract protected function verifierSolde($user_id, $account_type): bool;
+
     // Fonction pour alimenter le compte
     public function alimenterCompte($user_id, $montant, $account_type = 'courant') {
+        if (!$this->verifierMontant($montant)) {
+            return false;
+        }
+
         try {
             $stmt = $this->pdo->prepare("
                 UPDATE accounts 
@@ -32,8 +40,11 @@ class Compte {
     }
 
     // Fonction pour faire un retrait
-
     public function retraitCompte($user_id, $montant, $account_type = 'courant') {
+        if (!$this->verifierMontant($montant) || !$this->verifierSolde($user_id, $account_type)) {
+            return false;
+        }
+
         try {
             $stmt = $this->pdo->prepare("
                 UPDATE accounts 
