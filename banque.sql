@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jan 08, 2025 at 03:05 PM
+-- Generation Time: Jan 09, 2025 at 10:05 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -41,8 +41,8 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`id`, `user_id`, `account_type`, `balance`, `created_at`, `updated_at`) VALUES
-(1, 3, 'courant', '100.00', '2025-01-06 15:59:59', '2025-01-06 15:59:59'),
-(2, 3, 'epargne', '500.00', '2025-01-07 08:21:40', '2025-01-07 08:21:40');
+(1, 3, 'courant', '11000.00', '2025-01-06 15:59:59', '2025-01-09 10:05:04'),
+(2, 3, 'epargne', '18977.50', '2025-01-07 08:21:40', '2025-01-09 10:02:59');
 
 -- --------------------------------------------------------
 
@@ -58,6 +58,22 @@ CREATE TABLE `transactions` (
   `beneficiary_account_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `account_id`, `transaction_type`, `amount`, `beneficiary_account_id`, `created_at`) VALUES
+(3, 1, 'transfert', '1000.00', 2, '2025-01-08 16:10:38'),
+(5, 1, 'transfert', '5000.00', 2, '2025-01-08 16:13:17'),
+(6, 2, 'transfert', '5000.00', 1, '2025-01-08 16:13:17'),
+(52, 1, 'depot', '10000.00', NULL, '2025-01-09 10:02:30'),
+(53, 1, 'retrait', '10000.00', NULL, '2025-01-09 10:02:46'),
+(54, 2, 'transfert', '922.50', 1, '2025-01-09 10:02:59'),
+(55, 1, 'transfert', '900.00', 2, '2025-01-09 10:02:59'),
+(56, 1, 'depot', '100.00', NULL, '2025-01-09 10:04:48'),
+(57, 1, 'depot', '50.00', NULL, '2025-01-09 10:04:55'),
+(58, 1, 'retrait', '50.00', NULL, '2025-01-09 10:05:04');
 
 -- --------------------------------------------------------
 
@@ -92,7 +108,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `profile_pic`, `created_at`, `updated_at`, `role`, `status`, `civility`, `firstname`, `lastname`, `birthdate`, `nationality`, `phone`, `address`, `postal_code`, `city`) VALUES
 (1, 'admin', 'admin@banque.com', 'admin', NULL, '2025-01-06 10:38:02', '2025-01-08 11:02:58', 'admin', NULL, 'M.', 'simo', 'zouhairi', '2001-01-01', 'Française', '64654564', '654654', '654', '64654654cdsqsqsdqsd'),
-(3, 'yass', 'ayoub@gmail.com', '$2y$10$6GG7IRsGZPFzPiw0ftfll.Sn.Ht/Qzk9bFI7jle92/IcxHzyHFyNe', NULL, '2025-01-06 13:25:09', '2025-01-07 22:39:27', 'user', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'yass', 'ayoub@gmail.com', '$2y$10$6GG7IRsGZPFzPiw0ftfll.Sn.Ht/Qzk9bFI7jle92/IcxHzyHFyNe', NULL, '2025-01-06 13:25:09', '2025-01-08 15:08:16', 'user', 'active', 'M.', 'ayoub', 'fetti', '2002-07-18', 'Française', '0777074708', 'nr 52', '50000', 'meknes'),
 (4, 'dqsdsqdqsd', 'admin@example.comww', '$2y$10$46LuZA5e9ZF9FuKwnvR5MOxmsCrAXmI0oRJURoNQsSvylQWaVGwxG', NULL, '2025-01-07 10:25:11', '2025-01-08 14:12:51', 'user', 'inactive', 'M.', 'hmeeeedasa', 'ahmedwwwwssdddxxxx', '2000-10-10', 'Autre', '0505050505000', '05050 zsuzujz ', '10200', 'rbatssss'),
 (6, 'dqsdqsd', 'ww@ww.ww', '$2y$10$4utseyYvW4d5LayNtTF.NO1ypUsRzN5QmEcvoMRe3Qrbf3VB43dSq', NULL, '2025-01-07 10:26:44', '2025-01-07 10:26:44', 'user', 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (7, 'wqs', 'admwwin@example.com', '$2y$10$QPJWM7FqMY4R3mD/NYWMFOBVb6LFEqtergpBzzselmjZ10odfyi4m', NULL, '2025-01-07 10:26:51', '2025-01-07 10:27:10', 'user', 'inactive', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -141,7 +157,7 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `users`
