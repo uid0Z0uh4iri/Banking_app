@@ -2,6 +2,7 @@
 session_start();
 require_once '../config/database.php';
 require_once '../classes/User.php';
+require_once '../classes/Mailer.php';
 
 // Vérifier si l'utilisateur est connecté et est admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -17,8 +18,14 @@ $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ajouter un nouveau client
     if (isset($_POST['action']) && $_POST['action'] === 'add') {
-        if ($user->addUser($_POST['name'], $_POST['email'], $_POST['password'])) {
-            $message = "Client ajouté avec succès!";
+        $password = $_POST['password'];
+        if ($user->addUser($_POST['name'], $_POST['email'], $password)) {
+            // Envoyer l'email avec les informations du compte
+            if (sendAccountDetails($_POST['email'], $_POST['name'], $password)) {
+                $message = "Client ajouté avec succès et les informations ont été envoyées par email!";
+            } else {
+                $message = "Client ajouté avec succès mais l'envoi de l'email a échoué.";
+            }
         } else {
             $message = "Erreur lors de l'ajout du client.";
         }
