@@ -59,6 +59,53 @@
                 </div>
             </div>
         </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <h2 class="text-2xl font-bold mb-6">Tableau de bord</h2>
+            
+            <!-- Statistics Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Total Deposits Card -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Total des dépôts</p>
+                            <h3 class="text-2xl font-bold mt-2">€0.00</h3>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i data-lucide="arrow-down-circle" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Withdrawals Card -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Total des retraits</p>
+                            <h3 class="text-2xl font-bold mt-2">€0.00</h3>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-full">
+                            <i data-lucide="arrow-up-circle" class="w-6 h-6 text-red-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Balance Card -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-500 text-sm">Solde total</p>
+                            <h3 class="text-2xl font-bold mt-2">€0.00</h3>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i data-lucide="wallet" class="w-6 h-6 text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
