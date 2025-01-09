@@ -78,8 +78,8 @@ $balances = $user->getAccountBalances();
                             </div>
                             <div class="text-right">
                                 <p class="text-2xl font-bold text-gray-900"> <?php echo number_format($balances['courant'], 2, ',', ' '); ?> MAD</p>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    Actif
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <?php echo $user->getStatus() === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
+                                    <?php echo ucfirst($user->getStatus()); ?>
                                 </span>
                             </div>
                         </div>
@@ -129,9 +129,9 @@ $balances = $user->getAccountBalances();
                                 <h3 class="text-xl font-semibold text-gray-800">Compte Épargne</h3>
                             </div>
                             <div class="text-right">
-                                <p class="text-2xl font-bold text-gray-900"> <?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</p>
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    Actif
+                                <p class="text-2xl font-bold text-gray-900"><?php echo number_format($balances['epargne'], 2, ',', ' '); ?> MAD</p>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium <?php echo $user->getStatus() === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'; ?>">
+                                    <?php echo ucfirst($user->getStatus()); ?>
                                 </span>
                             </div>
                         </div>
