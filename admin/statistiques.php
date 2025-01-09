@@ -7,6 +7,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
+
+<?php
+
+
+include '../classes/User.php';
+include '../config/database.php';
+
+// Vérifier si l'utilisateur est connecté et est admin
+// if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+//     header('Location: ../auth.php');
+//     exit;
+// }
+
+
+// Créer une instance de User avec la connexion PDO
+$user = new User($pdo);
+
+// recuperer les statistiques
+
+
+$TotaleDepot = $user->getTotaleDepot();
+
+
+
+
+
+?>
+
+
+
+
 <body class="bg-gray-100">
     <div class="flex min-h-screen">
         <!-- Sidebar -->
@@ -71,7 +103,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Total des dépôts</p>
-                            <h3 class="text-2xl font-bold mt-2">€0.00</h3>
+                            <!-- Implode converts array to string -->
+                            <h3 class="text-2xl font-bold mt-2"><?php  echo implode($TotaleDepot);  ?></h3>
                         </div>
                         <div class="bg-green-100 p-3 rounded-full">
                             <i data-lucide="arrow-down-circle" class="w-6 h-6 text-green-600"></i>

@@ -150,6 +150,20 @@ class User {
         return $balances;
     }
 
+
+
+    // recupere le totale des depots
+
+
+    public function getTotaleDepot()
+    {
+        $stmt=$this->pdo->prepare("SELECT SUM(amount) FROM transactions WHERE transaction_type='depot'");
+        $stmt->execute();
+        $TotaleDepot= $stmt->fetch();
+
+        return $TotaleDepot;
+    }
+
 }
 
 ?>
