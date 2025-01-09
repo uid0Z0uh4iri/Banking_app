@@ -150,6 +150,42 @@ class User {
         return $balances;
     }
 
+
+
+    // recupere le totale des depots
+
+
+    public function getTotaleDepot()
+    {
+        $stmt=$this->pdo->prepare("SELECT SUM(amount) FROM transactions WHERE transaction_type='depot'");
+        $stmt->execute();
+        $TotaleDepot= $stmt->fetch();
+
+        return $TotaleDepot;
+    }
+
+
+
+
+    public function getTotaleRetrait()
+    {
+        $stmt=$this->pdo->prepare("SELECT SUM(amount) FROM transactions WHERE transaction_type='retrait'");
+        $stmt->execute();
+        $TotaleRetrait= $stmt->fetch();
+
+        return $TotaleRetrait;
+    }
+
+
+
+    public function getTotaleBalance()
+    {
+        $stmt=$this->pdo->prepare("SELECT SUM(balance) FROM accounts");
+        $stmt->execute();
+        $TotaleBalance= $stmt->fetch();
+
+        return $TotaleBalance;
+    }
 }
 
 ?>
