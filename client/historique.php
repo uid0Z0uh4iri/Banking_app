@@ -11,18 +11,18 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Récupérer l'ID de l'utilisateur
+// Recuperer l'ID de l'utilisateur
 $userId = $_SESSION['user_id'];
 
-// Initialiser la connexion à la base de données
+// Initialiser la connexion a la base de donnees
 $database = new Database();
 $pdo = $database->connect();
 
-// Créer une instance de la classe Compte pour récupérer les comptes
+// Creer une instance de la classe Compte pour recuperer les comptes
 $compte = new CompteCourant($pdo);
 $comptes = $compte->getComptesByUserId($userId);
 
-// Créer une instance de la classe Transactions
+// Creer une instance de la classe Transactions
 $transactions = new Transactions($pdo);
 
 // Calculer les totaux pour tous les comptes de l'utilisateur
@@ -39,6 +39,7 @@ foreach ($comptes as $compte) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ma Banque - Historique des transactions</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -85,50 +86,16 @@ foreach ($comptes as $compte) {
         <div class="flex-1 p-4 md:p-8">
             <h2 class="text-2xl font-bold text-gray-800">Historique des transactions</h2>
 
-            <!-- Filtres -->
+            <!-- Recherches -->
             <div class="bg-white rounded-lg shadow mt-6 p-4 md:p-6">
-                <h3 class="text-lg font-semibold text-gray-700 mb-4">Filtres</h3>
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Recherche</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Compte</label>
-                        <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500">
-                            <option value="all">Tous les comptes</option>
-                            <option value="current">Compte Courant</option>
-                            <option value="savings">Compte Épargne</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Période</label>
-                        <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500">
-                            <option value="7">7 derniers jours</option>
-                            <option value="30">30 derniers jours</option>
-                            <option value="90">3 derniers mois</option>
-                            <option value="365">12 derniers mois</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Type d'opération</label>
-                        <select class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500">
-                            <option value="all">Toutes les opérations</option>
-                            <option value="credit">Transfert</option>
-                            <option value="debit">dépôt</option>
-                            <option value="transfer">Retrait</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Montant</label>
-                        <div class="flex space-x-2">
-                            <input 
-                                type="number" 
-                                placeholder="0.00"
-                                min='1'
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
-                            />
-                        </div>
-                    </div>
+                    <input 
+                        type="search" 
+                        id="searchInput"
+                        placeholder="Rechercher une transaction..." 
+                        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500" 
+                    >
                 </div>
 
                 <!-- Date personnalisée (caché par défaut) -->
@@ -150,12 +117,6 @@ foreach ($comptes as $compte) {
                 </div>
 
                 <div class="mt-4 flex flex-col md:flex-row justify-end space-x-0 md:space-x-4">
-                    <!-- <button class="mb-2 md:mb-0 px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-                        Réinitialiser
-                    </button> -->
-                    <!-- <button class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
-                        Appliquer les filtres
-                    </button> -->
                 </div>
             </div>
 
@@ -180,20 +141,16 @@ foreach ($comptes as $compte) {
                 <div class="p-4 md:p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-700">Dernières transactions</h3>
-                        <button class="text-blue-600 hover:text-blue-800 flex items-center">
-                            <i data-lucide="download" class="w-4 h-4 mr-2"></i>
-                            Exporter
-                        </button>
+
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="min-w-full table-auto">
-                            <thead>
-                                <tr class="bg-gray-50">
+                        <table class="min-w-full" id="transactionsTable">
+                            <thead class="bg-gray-50">
+                                <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compte</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Détails</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compte</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -201,34 +158,25 @@ foreach ($comptes as $compte) {
                                 // Récupérer toutes les transactions de l'utilisateur
                                 $allTransactions = $transactions->getAllTransactionsByUserId($userId);
                                 
-                                foreach ($allTransactions as $transaction): 
-                                    $montant = number_format($transaction['amount'], 2);
-                                    $date = date('d/m/Y H:i', strtotime($transaction['created_at']));
-                                    $type = ucfirst($transaction['transaction_type']);
-                                    $compte = ucfirst($transaction['account_type']);
-                                    
-                                    // Définir la classe CSS pour le montant selon le type de transaction
-                                    $montantClass = 'text-gray-900';
-                                    if ($transaction['transaction_type'] === 'depot' || ($transaction['transaction_type'] === 'transfert' && $transaction['beneficiary_account_id'] === null)) {
-                                        $montantClass = 'text-green-600';
-                                        $montant = '+ ' . $montant;
-                                    } else {
-                                        $montantClass = 'text-red-600';
-                                        $montant = '- ' . $montant;
-                                    }
-                                ?>
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo $date; ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $type; ?></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo $compte; ?></td>
+                                foreach ($allTransactions as $transaction): ?>
+                                    <tr class="transaction-row">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <?php if ($transaction['transaction_type'] === 'transfert' && $transaction['beneficiary_account_id']): ?>
-                                                <?php echo $transaction['beneficiary_account_id'] ? 'Transfert vers ' . $transaction['beneficiary_account_type'] : ''; ?>
-                                            <?php else: ?>
-                                                <?php echo $type; ?>
+                                            <?php echo date('d/m/Y', strtotime($transaction['created_at'])); ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo ucfirst($transaction['transaction_type']); ?>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="<?php echo $transaction['transaction_type'] === 'depot' ? 'text-green-600' : 'text-red-600'; ?> font-semibold">
+                                                <?php echo $transaction['transaction_type'] === 'depot' ? '+' : '-'; ?><?php echo $transaction['amount']; ?> €
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            <?php echo ucfirst($transaction['account_type']); ?>
+                                            <?php if ($transaction['transaction_type'] === 'transfert' && $transaction['beneficiary_account_type']): ?>
+                                                → <?php echo ucfirst($transaction['beneficiary_account_type']); ?>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm <?php echo $montantClass; ?>"><?php echo $montant; ?> MAD</td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -242,11 +190,26 @@ foreach ($comptes as $compte) {
         // Toggle sidebar visibility on mobile
         const toggleButton = document.getElementById('toggleSidebar');
         const sidebar = document.querySelector('.w-64');
-
+        
         toggleButton.addEventListener('click', () => {
             sidebar.classList.toggle('hidden');
         });
 
+        // Fonction de recherche en temps réel
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.transaction-row');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+        
         lucide.createIcons();
     </script>
 </body>
