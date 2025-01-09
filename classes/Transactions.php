@@ -12,8 +12,7 @@
         $this->pdo = $pdo;
     }
 
-
-  // fonctions pour faire un virement entre les deux comptes
+  // fonctions pour faire un virement entre les deux comptes avec polimorphisme
 
     public function transferBetweenAccounts($fromAccountId, $toAccountId, $amount) {
         try {
@@ -70,6 +69,64 @@
 
         } catch (Exception $e) {
             $this->pdo->rollBack();
+            throw $e;
+        }
+    }
+    // fonctions pour enregistrer les retraits et les depots dans la table transactions
+    public function recordTransaction($accountId, $type, $amount) {
+        try {
+            // Vérifier que le type est valide
+            if (!in_array($type, ['depot', 'retrait'])) {
+                throw new Exception("Type de transaction invalide");
+            }
+
+            // Enregistrer la transaction
+            $stmt = $this->pdo->prepare("INSERT INTO transactions (account_id, transaction_type, amount, created_at) VALUES (?, ?, ?, NOW())");
+            $stmt->execute([$accountId, $type, $amount]);
+
+            return true;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+ // fonction pour calculer le total des depots
+    public function getTotalDeposits($accountId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT SUM(amount) as total FROM transactions WHERE account_id = ? AND transaction_type = 'depot'");
+            $stmt->execute([$accountId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['total'] ?? 0;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+ // fonction pour calculer le total des retrait
+    public function getTotalWithdrawals($accountId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT SUM(amount) as total FROM transactions WHERE account_id = ? AND transaction_type = 'retrait'");
+            $stmt->execute([$accountId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['total'] ?? 0;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+  // fonction pour afficher tout les transactions du client dans l'historique
+
+    public function getAllTransactionsByUserId($userId) {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT t.*, a.account_type, ba.account_type as beneficiary_account_type 
+                FROM transactions t
+                INNER JOIN accounts a ON t.account_id = a.id
+                LEFT JOIN accounts ba ON t.beneficiary_account_id = ba.id
+                WHERE a.user_id = ?
+                ORDER BY t.created_at DESC
+            ");
+            $stmt->execute([$userId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
             throw $e;
         }
     }

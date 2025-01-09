@@ -48,10 +48,6 @@ $balances = $user->getAccountBalances();
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
-                    <i data-lucide="users"></i>
-                    <span>Bénéficiaires</span>
-                </a> -->
                 <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="history"></i>
                     <span>Historique</span>
@@ -59,6 +55,10 @@ $balances = $user->getAccountBalances();
                 <a href="profil.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="user"></i>
                     <span>Profil</span>
+                </a>
+                <a href="../logout.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-red-50 hover:text-red-600">
+                    <i data-lucide="log-out"></i>
+                    <span>Deconnexion</span>
                 </a>
             </nav>
         </div>

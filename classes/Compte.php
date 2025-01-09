@@ -1,15 +1,18 @@
 <?php
 
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/Transactions.php';
 
 abstract class Compte {
     protected $pdo;
     protected $user_id;
     protected $account_type;
     protected $balance;
+    protected $transactions;
 
     public function __construct($pdo) {
         $this->pdo = $pdo;
+        $this->transactions = new Transactions($pdo);
     }
 
     // methodes abstraites
@@ -23,6 +26,18 @@ abstract class Compte {
         }
 
         try {
+            $this->pdo->beginTransaction();
+
+            // Récupérer l'ID du compte
+            $stmt = $this->pdo->prepare("SELECT id FROM accounts WHERE user_id = ? AND account_type = ?");
+            $stmt->execute([$user_id, $account_type]);
+            $account = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$account) {
+                throw new Exception("Compte non trouvé");
+            }
+
+            // Mettre à jour le solde
             $stmt = $this->pdo->prepare("
                 UPDATE accounts 
                 SET balance = balance + ? 
@@ -30,11 +45,13 @@ abstract class Compte {
             ");
             $stmt->execute([$montant, $user_id, $account_type]);
             
-            if ($stmt->rowCount() > 0) {
-                return true;
-            }
-            return false;
-        } catch (PDOException $e) {
+            // Enregistrer la transaction
+            $this->transactions->recordTransaction($account['id'], 'depot', $montant);
+
+            $this->pdo->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
             return false;
         }
     }
@@ -42,10 +59,23 @@ abstract class Compte {
     // Fonction pour faire un retrait
     public function retraitCompte($user_id, $montant, $account_type = 'courant') {
         if (!$this->verifierMontant($montant) || !$this->verifierSolde($user_id, $account_type)) {
-            return false;
+        require_once __DIR__ . '/Transactions.php';            
+        return false;
         }
 
         try {
+            $this->pdo->beginTransaction();
+
+            // Récupérer l'ID du compte
+            $stmt = $this->pdo->prepare("SELECT id FROM accounts WHERE user_id = ? AND account_type = ?");
+            $stmt->execute([$user_id, $account_type]);
+            $account = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$account) {
+                throw new Exception("Compte non trouvé");
+            }
+
+            // Mettre à jour le solde
             $stmt = $this->pdo->prepare("
                 UPDATE accounts 
                 SET balance = balance - ? 
@@ -53,11 +83,13 @@ abstract class Compte {
             ");
             $stmt->execute([$montant, $user_id, $account_type]);
             
-            if ($stmt->rowCount() > 0) {
-                return true;
-            }
-            return false;
-        } catch (PDOException $e) {
+            // Enregistrer la transaction
+            $this->transactions->recordTransaction($account['id'], 'retrait', $montant);
+
+            $this->pdo->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
             return false;
         }
     }
@@ -70,8 +102,13 @@ abstract class Compte {
             WHERE user_id = ? AND account_type = ?
         ");
         $stmt->execute([$user_id, $account_type]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        return $result ? $result['balance'] : 0;
+        return $stmt->fetchColumn();
+    }
+
+    // Recuperer tous les comptes d'un utilisateur
+    public function getComptesByUserId($user_id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM accounts WHERE user_id = ?");
+        $stmt->execute([$user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -34,28 +34,14 @@ $balances = $user->getAccountBalances();
 <body class="bg-gray-100">
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <div class="w-64 bg-white shadow-lg hidden md:block" id="sidebar">
+        <div class="w-64 bg-white shadow-lg md:block hidden">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">Bonjour <?php echo htmlspecialchars(ucfirst($user->getName())); ?></h1>
-            </div>
-            <div class="burger-menu ml-[30px] relative">
-                <button class="burger-button rounded-full p-2 hover:bg-gray-100 transition-colors">
-                    <i class="fas fa-user-circle text-2xl text-blue-600"></i>
-                </button>
-                <div class="menu-options hidden absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                    <a href="profil.php" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                        <i class="fas fa-user mr-2"></i>Profil
-                    </a>
-                    <div class="border-t border-gray-100"></div>
-                    <a href="../auth.php?logout=true" class="block px-4 py-2 text-red-600 hover:bg-red-50 transition-colors">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
-                    </a>
-                </div>
+                <h1 class="text-2xl font-bold text-blue-600">BanKa2KA</h1>
             </div>
             <nav class="mt-6">
-                <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
-                    <i data-lucide="wallet"></i>
-                    <span>Tableau de bord</span>
+            <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
+                    <i data-lucide="history"></i>
+                    <span>Tableau de bord </span>
                 </a>
                 <a href="compte.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
                     <i data-lucide="credit-card"></i>
@@ -65,13 +51,17 @@ $balances = $user->getAccountBalances();
                     <i data-lucide="send"></i>
                     <span>Virements</span>
                 </a>
-                <!-- <a href="benificier.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
-                    <i data-lucide="users"></i>
-                    <span>Bénéficiaires</span>
-                </a> -->
                 <a href="historique.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
-                    <i data-lucide="history"></i>
-                    <span>Historique</span>
+                    <i data-lucide="credit-card"></i>
+                    <span>Historiques</span>
+                </a>
+                <a href="profil.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-gray-50">
+                    <i data-lucide="user"></i>
+                    <span>Profil</span>
+                </a>
+                <a href="../logout.php" class="flex items-center w-full p-4 space-x-3 text-gray-600 hover:bg-red-50 hover:text-red-600">
+                    <i data-lucide="log-out"></i>
+                    <span>Deconnexion</span>
                 </a>
             </nav>
         </div>
