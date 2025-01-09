@@ -30,6 +30,7 @@ $user = new User($pdo);
 
 $TotaleDepot = $user->getTotaleDepot();
 $TotaleRetrait= $user->getTotaleRetrait();
+$TotaleBalance = $user->getTotaleBalance();
 
 
 
@@ -132,7 +133,7 @@ $TotaleRetrait= $user->getTotaleRetrait();
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Solde total</p>
-                            <h3 class="text-2xl font-bold mt-2">€0.00</h3>
+                            <h3 class="text-2xl font-bold mt-2"><?php  echo implode($TotaleBalance);  ?></h3>
                         </div>
                         <div class="bg-blue-100 p-3 rounded-full">
                             <i data-lucide="wallet" class="w-6 h-6 text-blue-600"></i>

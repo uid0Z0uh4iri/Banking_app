@@ -175,6 +175,17 @@ class User {
 
         return $TotaleRetrait;
     }
+
+
+
+    public function getTotaleBalance()
+    {
+        $stmt=$this->pdo->prepare("SELECT SUM(balance) FROM accounts");
+        $stmt->execute();
+        $TotaleBalance= $stmt->fetch();
+
+        return $TotaleBalance;
+    }
 }
 
 ?>
