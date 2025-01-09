@@ -29,6 +29,7 @@ $user = new User($pdo);
 
 
 $TotaleDepot = $user->getTotaleDepot();
+$TotaleRetrait= $user->getTotaleRetrait();
 
 
 
@@ -110,6 +111,7 @@ $TotaleDepot = $user->getTotaleDepot();
                             <i data-lucide="arrow-down-circle" class="w-6 h-6 text-green-600"></i>
                         </div>
                     </div>
+                    
                 </div>
 
                 <!-- Total Withdrawals Card -->
@@ -117,7 +119,7 @@ $TotaleDepot = $user->getTotaleDepot();
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-500 text-sm">Total des retraits</p>
-                            <h3 class="text-2xl font-bold mt-2">€0.00</h3>
+                            <h3 class="text-2xl font-bold mt-2"><?php  echo implode($TotaleRetrait);  ?></h3>
                         </div>
                         <div class="bg-red-100 p-3 rounded-full">
                             <i data-lucide="arrow-up-circle" class="w-6 h-6 text-red-600"></i>

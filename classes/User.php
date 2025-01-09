@@ -164,6 +164,17 @@ class User {
         return $TotaleDepot;
     }
 
+
+
+
+    public function getTotaleRetrait()
+    {
+        $stmt=$this->pdo->prepare("SELECT SUM(amount) FROM transactions WHERE transaction_type='retrait'");
+        $stmt->execute();
+        $TotaleRetrait= $stmt->fetch();
+
+        return $TotaleRetrait;
+    }
 }
 
 ?>
