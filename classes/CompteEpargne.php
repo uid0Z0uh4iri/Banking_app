@@ -3,8 +3,8 @@
 require_once __DIR__ . '/Compte.php';
 
 class CompteEpargne extends Compte {
-    public const MONTANT_MINIMUM = 0.01; // Montant minimum pour un depot
-    public const SOLDE_MINIMUM = 1000;  // Solde minimum a maintenir
+    public const MONTANT_MINIMUM = 0.01; // montant minimum pour un depot
+    public const SOLDE_MINIMUM = 1000;  // solde minimum a maintenir
 
     protected function verifierMontant($montant): bool {
         // Verifier si le montant est positif et superieur au montant minimum requis

@@ -22,6 +22,7 @@ $message = '';
 $messageType = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    var_dump($_POST['amount']);
     try {
         $fromAccount = $_POST['debitAccount'];
         $toAccount = $_POST['creditAccount'];
@@ -47,17 +48,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Effectuer le transfert
         $transaction->transferBetweenAccounts($fromAccountId, $toAccountId, $amount);
         
-        $message = "Le virement a été effectué avec succès";
-        $messageType = "success";
-        
-        // Recharger les soldes après le transfert
-        $balances = $user->getAccountBalances();
+        // Rediriger avec un message de succès
+        header('Location: virement.php?message=' . urlencode("Le virement a été effectué avec succès") . '&type=success');
+        exit();
         
     } catch (Exception $e) {
         $message = $e->getMessage();
         $messageType = "error";
     }
 } else {
+    // Recuperer les messages de la redirection si présents
+    if (isset($_GET['message']) && isset($_GET['type'])) {
+        $message = $_GET['message'];
+        $messageType = $_GET['type'];
+    }
+    
     // Recuperer les soldes des comptes
     $balances = $user->getAccountBalances();
 }

@@ -135,15 +135,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div class="bg-white p-6 rounded-lg shadow">
                     <h3 class="text-sm font-medium text-gray-500">Total des entrées</h3>
-                    <p class="text-2xl font-bold text-green-600 mt-2">+ 3,450.50 €</p>
+                    <p class="text-2xl font-bold text-green-600 mt-2">+ 3,450.50 MAD</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow">
                     <h3 class="text-sm font-medium text-gray-500">Total des sorties</h3>
-                    <p class="text-2xl font-bold text-red-600 mt-2">- 2,180.30 €</p>
+                    <p class="text-2xl font-bold text-red-600 mt-2">- 2,180.30 MAD</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow">
                     <h3 class="text-sm font-medium text-gray-500">Solde de la période</h3>
-                    <p class="text-2xl font-bold text-blue-600 mt-2">+ 1,270.20 €</p>
+                    <p class="text-2xl font-bold text-blue-600 mt-2">+ 1,270.20 MAD</p>
                 </div>
             </div>
 
@@ -202,7 +202,7 @@
                             Compte Courant
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-red-600">
-                            - 125.00 €
+                            - 125.00 MAD
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                             <button class="text-blue-600 hover:text-blue-900">
@@ -229,7 +229,7 @@
                             Compte Courant
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium text-green-600">
-                            + 2,500.00 €
+                            + 2,500.00 MAD
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                             <button class="text-blue-600 hover:text-blue-900">
