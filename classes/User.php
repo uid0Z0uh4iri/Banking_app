@@ -186,6 +186,13 @@ class User {
 
         return $TotaleBalance;
     }
+
+    public function isFirstLogin() {
+        $stmt = $this->pdo->prepare("SELECT is_first_login FROM users WHERE id = ?");
+        $stmt->execute([$this->getId()]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['is_first_login'] == 1;
+    }
 }
 
 ?>
