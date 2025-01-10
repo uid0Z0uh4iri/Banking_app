@@ -8,10 +8,6 @@ $pdo = $db->connect();
 $user = new User($pdo);
 $errors = [];
 
-
-
-
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
@@ -25,15 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($errors)) {
-        
         if ($user->login($email, $password)) {
             $_SESSION['user_id'] = $user->getId();
             $_SESSION['user_name'] = $user->getName();
             $_SESSION['user_role'] = $user->getRole();
             
+            // Check if user is inactive
+            if ($user->getStatus() === 'inactive') {
+                header('Location: client/inactif.php');
+                exit();
+            }
+            
             // Vérifier si c'est la première connexion
             if ($user->isFirstLogin()) {
-                header("Location: update_info.php");
+                header('Location: activate_account.php');
                 exit();
             }
             
@@ -91,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ?>
             </div>
         <?php endif; ?>
-
+        
         <div class="login-container">
             <div class="logo-container">
                 <div class="bank-logo">

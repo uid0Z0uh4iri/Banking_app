@@ -48,6 +48,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
     }
 }
 
+// Logic for profile picture upload
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profile_pic'])) {
+    $user_id = $_SESSION['user_id'];
+    $file = $_FILES['profile_pic'];
+    
+    // Vérifier si le fichier est une image
+    $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($file['type'], $allowed_types)) {
+        $_SESSION['upload_error'] = "Seuls les fichiers JPG, PNG et GIF sont autorisés";
+        header('Location: profil.php');
+        exit();
+    }
+
+    // Vérifier la taille du fichier (max 5MB)
+    if ($file['size'] > 5 * 1024 * 1024) {
+        $_SESSION['upload_error'] = "La taille du fichier ne doit pas dépasser 5MB";
+        header('Location: profil.php');
+        exit();
+    }
+
+    // Créer le dossier images s'il n'existe pas
+    $upload_dir = '../images/';
+    if (!file_exists($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
+    }
+
+    // Générer un nom de fichier unique
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = 'profile_' . $user_id . '_' . time() . '.' . $extension;
+    $target_path = $upload_dir . $filename;
+
+    if (move_uploaded_file($file['tmp_name'], $target_path)) {
+        try {
+            // Mettre à jour la base de données avec le chemin de la photo
+            $stmt = $pdo->prepare("UPDATE users SET profile_pic = ? WHERE id = ?");
+            $stmt->execute([$filename, $user_id]);
+            
+            $_SESSION['upload_success'] = "Photo de profil mise à jour avec succès";
+        } catch(PDOException $e) {
+            $_SESSION['upload_error'] = "Erreur lors de la mise à jour de la photo: " . $e->getMessage();
+        }
+    } else {
+        $_SESSION['upload_error'] = "Erreur lors du téléchargement du fichier";
+    }
+    
+    header('Location: profil.php');
+    exit();
+}
+
 // Logic dial update profile (mettre ce bloc APRÈS)
 elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Récupération des données du formulaire
@@ -129,7 +178,6 @@ try {
     $message_error = "Erreur lors de la récupération des données: " . $e->getMessage();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -184,34 +232,56 @@ try {
                     <div class="bg-white rounded-lg shadow">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-700 mb-4">Informations Personnelles</h3>
-                            <form class="space-y-6" method="POST">
+                            <form class="space-y-6" method="POST" enctype="multipart/form-data">
                                 <!-- Photo de profil -->
                                 <div class="flex items-center space-x-6">
                                     <div class="relative">
                                         <img 
-                                            src="/api/placeholder/128/128" 
-                                            alt="Photo de profil"
-                                            class="w-32 h-32 rounded-full object-cover"
-                                        />
-                                        <button 
-                                            type="button"
-                                            class="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700"
+                                            src="<?php echo isset($user['profile_pic']) ? '../images/' . $user['profile_pic'] : '../assets/images/default-avatar.png'; ?>" 
+                                            alt="Photo de profil" 
+                                            class="w-24 h-24 rounded-full object-cover"
                                         >
-                                            <i data-lucide="camera" class="w-4 h-4"></i>
-                                        </button>
                                     </div>
-                                    <div>
+                                    <div class="flex-1">
+                                        <label class="block">
+                                            <span class="sr-only">Choisir une photo</span>
+                                            <input 
+                                                type="file" 
+                                                name="profile_pic" 
+                                                accept="image/*"
+                                                class="block w-full text-sm text-gray-500
+                                                    file:mr-4 file:py-2 file:px-4
+                                                    file:rounded-full file:border-0
+                                                    file:text-sm file:font-semibold
+                                                    file:bg-blue-50 file:text-blue-700
+                                                    hover:file:bg-blue-100"
+                                            >
+                                        </label>
                                         <button 
-                                            type="button"
-                                            class="text-sm text-blue-600 hover:text-blue-800"
+                                            type="submit"
+                                            class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
                                         >
-                                            Changer la photo
+                                            Mettre à jour la photo
                                         </button>
-                                        <p class="text-xs text-gray-500 mt-1">
-                                            JPG, PNG ou GIF. Max 1MB.
-                                        </p>
                                     </div>
                                 </div>
+
+                                <?php if (isset($_SESSION['upload_error'])): ?>
+                                    <div class="text-red-500 text-sm mt-2">
+                                        <?php 
+                                        echo $_SESSION['upload_error'];
+                                        unset($_SESSION['upload_error']);
+                                        ?>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (isset($_SESSION['upload_success'])): ?>
+                                    <div class="text-green-500 text-sm mt-2">
+                                        <?php 
+                                        echo $_SESSION['upload_success'];
+                                        unset($_SESSION['upload_success']);
+                                        ?>
+                                    </div>
+                                <?php endif; ?>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
@@ -334,7 +404,6 @@ try {
                                         <?php echo $message_success; ?>
                                     </div>
                                 <?php endif; ?>
-
                                 <?php if (isset($message_error)): ?>
                                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                                         <?php echo $message_error; ?>
@@ -394,7 +463,6 @@ try {
                                         <?php echo $password_success; ?>
                                     </div>
                                 <?php endif; ?>
-
                                 <?php if (isset($password_error)): ?>
                                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
                                         <?php echo $password_error; ?>
@@ -416,15 +484,15 @@ try {
                                     <h4 class="text-sm font-medium text-gray-700">Notifications</h4>
                                     <div class="mt-2 space-y-2">
                                         <label class="flex items-center">
-                                            <input type="checkbox" class="rounded text-blue-600" checked />
+                                            <input type="checkbox" class="rounded text-blue-600" />
                                             <span class="ml-2 text-sm text-gray-700">Notifications par email</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="checkbox" class="rounded text-blue-600" checked />
+                                            <input type="checkbox" class="rounded text-blue-600" />
                                             <span class="ml-2 text-sm text-gray-700">Notifications SMS</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="checkbox" class="rounded text-blue-600" checked />
+                                            <input type="checkbox" class="rounded text-blue-600"/>
                                             <span class="ml-2 text-sm text-gray-700">Alertes de sécurité</span>
                                         </label>
                                     </div>
@@ -438,7 +506,7 @@ try {
                                             <span class="ml-2 text-sm text-gray-700">Masquer le solde sur la page d'accueil</span>
                                         </label>
                                         <label class="flex items-center">
-                                            <input type="checkbox" class="rounded text-blue-600" checked />
+                                            <input type="checkbox" class="rounded text-blue-600"  />
                                             <span class="ml-2 text-sm text-gray-700">Double authentification</span>
                                         </label>
                                     </div>
@@ -449,10 +517,12 @@ try {
                                     <div class="mt-2 space-y-4">
                                         <select class="block w-full rounded-md border border-gray-300 px-3 py-2">
                                             <option>Français</option>
+                                            <option>Arabe</option>
                                             <option>English</option>
                                         </select>
                                         <select class="block w-full rounded-md border border-gray-300 px-3 py-2">
-                                            <option>EUR (€)</option>
+                                            <option>Maroc (MAD)</option>
+                                            <option>Europe (EUR)</option>
                                             <option>USD ($)</option>
                                         </select>
                                     </div>
@@ -465,7 +535,7 @@ try {
                                     class="flex items-center text-red-600 hover:text-red-800"
                                 >
                                     <i data-lucide="trash-2" class="w-4 h-4 mr-2"></i>
-                                    Supprimer mon compte
+                                    Désactiver mon compte
                                 </button>
                             </div>
                         </div>

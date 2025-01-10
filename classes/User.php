@@ -61,11 +61,13 @@ class User {
                 $this->name = $user['name'];
                 $this->email = $user['email'];
                 $this->role = $user['role'];
+                $this->status = $user['status'];
                 
                 // Ajoutons le rôle dans la session
                 $_SESSION['user_id'] = $this->id;
                 $_SESSION['user_email'] = $this->email;
                 $_SESSION['role'] = $user['role'];  // Important !
+                $_SESSION['status'] = $this->status;
                 
                 return true;
             }
@@ -150,7 +152,19 @@ class User {
         return $balances;
     }
 
-
+    // Récupérer les transactions récentes de l'utilisateur
+    public function getRecentTransactions($limit = 5) {
+        $stmt = $this->pdo->prepare("
+            SELECT t.*, a.account_type 
+            FROM transactions t
+            JOIN accounts a ON t.account_id = a.id
+            WHERE a.user_id = ?
+            ORDER BY t.created_at DESC
+            LIMIT " . intval($limit)
+        );
+        $stmt->execute([$this->id]);
+        return $stmt->fetchAll();
+    }
 
     // recupere le totale des depots
 
@@ -178,6 +192,7 @@ class User {
 
 
 
+
     public function getTotaleBalance()
     {
         $stmt=$this->pdo->prepare("SELECT SUM(balance) FROM accounts");
@@ -187,11 +202,21 @@ class User {
         return $TotaleBalance;
     }
 
-    public function isFirstLogin() {
-        $stmt = $this->pdo->prepare("SELECT is_first_login FROM users WHERE id = ?");
-        $stmt->execute([$this->getId()]);
+    public function isFirstLogin()
+    {
+        $query = "SELECT is_first_login FROM users WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['id' => $this->id]);
+        
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['is_first_login'] == 1;
+    }
+
+    public function setFirstLoginComplete()
+    {
+        $query = "UPDATE users SET is_first_login = 0 WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute(['id' => $this->id]);
     }
 }
 

@@ -35,5 +35,4 @@ $mail = new PHPMailer(true);
     $mail->Body    = ' Welcome to Baka2Ka, this is your password you should update it and update your informations in the app. Password : <b>'. $password .' </b>';
     $mail->send();
     return true;
-
 }
