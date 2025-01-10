@@ -61,11 +61,13 @@ class User {
                 $this->name = $user['name'];
                 $this->email = $user['email'];
                 $this->role = $user['role'];
+                $this->status = $user['status'];
                 
                 // Ajoutons le rôle dans la session
                 $_SESSION['user_id'] = $this->id;
                 $_SESSION['user_email'] = $this->email;
                 $_SESSION['role'] = $user['role'];  // Important !
+                $_SESSION['status'] = $this->status;
                 
                 return true;
             }
