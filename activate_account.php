@@ -52,13 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Création du compte courant
         $sqlCourant = "INSERT INTO accounts (user_id, account_type, balance, created_at, updated_at) 
-                       VALUES (:user_id, 'courant', 100.00, NOW(), NOW())";
+                       VALUES (:user_id, 'courant', 0.00, NOW(), NOW())";
         $stmtCourant = $pdo->prepare($sqlCourant);
         $stmtCourant->execute(['user_id' => $user_id]);
 
         // Création du compte épargne
         $sqlEpargne = "INSERT INTO accounts (user_id, account_type, balance, created_at, updated_at) 
-                       VALUES (:user_id, 'epargne', 100.50, NOW(), NOW())";
+                       VALUES (:user_id, 'epargne', 0.00, NOW(), NOW())";
         $stmtEpargne = $pdo->prepare($sqlEpargne);
         $stmtEpargne->execute(['user_id' => $user_id]);
 
