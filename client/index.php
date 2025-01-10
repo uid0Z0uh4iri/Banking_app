@@ -36,7 +36,7 @@ $balances = $user->getAccountBalances();
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg md:block hidden">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">BanKa2KA</h1>
+                <h1 class="text-2xl font-bold text-blue-600">Bienvenue <?php echo htmlspecialchars(ucfirst($_SESSION['user_name'])); ?></h1>
             </div>
             <nav class="mt-6">
             <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
