@@ -1,181 +1,88 @@
 <?php
-// Au début du fichier, avant le HTML
 require_once('../config/database.php');
+require_once('includes/user_info.php');
+require_once('includes/form_handler.php');
+require_once('includes/image_handler.php');
 session_start();
 
-// Logic dial update password (mettre ce bloc en PREMIER)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
-    $current_password = $_POST['current_password'] ?? '';
-    $new_password = $_POST['new_password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-    $user_id = $_SESSION['user_id']; // Correction ici
-
-    try {
-        // Vérifier si le mot de passe actuel est correct
-        $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
-        $stmt->execute([$user_id]);
-        $user = $stmt->fetch();
-
-        if (!password_verify($current_password, $user['password'])) {
-            $_SESSION['password_error'] = "Le mot de passe actuel est incorrect";
-        } 
-        elseif ($new_password !== $confirm_password) {
-            $_SESSION['password_error'] = "Les nouveaux mots de passe ne correspondent pas";
-        }
-        elseif (strlen($new_password) < 8) {
-            $_SESSION['password_error'] = "Le nouveau mot de passe doit contenir au moins 8 caractères";
-        }
-        else {
-            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-            
-            // Mise à jour uniquement du mot de passe
-            $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE id = :user_id");
-            $stmt->execute([
-                'password' => $hashed_password,
-                'user_id' => $user_id
-            ]);
-
-            $_SESSION['password_success'] = "Votre mot de passe a été mis à jour avec succès";
-        }
-
-        header('Location: profil.php');
-        exit();
-
-    } catch(PDOException $e) {
-        $_SESSION['password_error'] = "Erreur lors de la mise à jour du mot de passe: " . $e->getMessage();
-        header('Location: profil.php');
-        exit();
-    }
+// Debug: Afficher toutes les données POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    error_log('POST Data: ' . print_r($_POST, true));
+    error_log('Session user_id: ' . $_SESSION['user_id']);
 }
 
-// Logic for profile picture upload
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profile_pic'])) {
-    $user_id = $_SESSION['user_id'];
-    $file = $_FILES['profile_pic'];
+// Initialisation des messages
+$message_success = $message_error = $password_success = $password_error = null;
+
+// Gestion de la mise à jour du mot de passe
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
+    $result = handlePasswordUpdate(
+        $pdo,
+        $_POST['current_password'] ?? '',
+        $_POST['new_password'] ?? '',
+        $_POST['confirm_password'] ?? '',
+        $_SESSION['user_id']
+    );
     
-    // Vérifier si le fichier est une image
-    $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!in_array($file['type'], $allowed_types)) {
-        $_SESSION['upload_error'] = "Seuls les fichiers JPG, PNG et GIF sont autorisés";
-        header('Location: profil.php');
-        exit();
-    }
-
-    // Vérifier la taille du fichier (max 5MB)
-    if ($file['size'] > 5 * 1024 * 1024) {
-        $_SESSION['upload_error'] = "La taille du fichier ne doit pas dépasser 5MB";
-        header('Location: profil.php');
-        exit();
-    }
-
-    // Créer le dossier images s'il n'existe pas
-    $upload_dir = '../images/';
-    if (!file_exists($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
-    }
-
-    // Générer un nom de fichier unique
-    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $filename = 'profile_' . $user_id . '_' . time() . '.' . $extension;
-    $target_path = $upload_dir . $filename;
-
-    if (move_uploaded_file($file['tmp_name'], $target_path)) {
-        try {
-            // Mettre à jour la base de données avec le chemin de la photo
-            $stmt = $pdo->prepare("UPDATE users SET profile_pic = ? WHERE id = ?");
-            $stmt->execute([$filename, $user_id]);
-            
-            $_SESSION['upload_success'] = "Photo de profil mise à jour avec succès";
-        } catch(PDOException $e) {
-            $_SESSION['upload_error'] = "Erreur lors de la mise à jour de la photo: " . $e->getMessage();
-        }
+    if (isset($result['error'])) {
+        $_SESSION['password_error'] = $result['error'];
     } else {
-        $_SESSION['upload_error'] = "Erreur lors du téléchargement du fichier";
+        $_SESSION['password_success'] = $result['success'];
     }
-    
     header('Location: profil.php');
     exit();
 }
 
-// Logic dial update profile (mettre ce bloc APRÈS)
-elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Récupération des données du formulaire
-    $civility = $_POST['civility'] ?? '';
-    $lastname = $_POST['nom'] ?? '';
-    $firstname = $_POST['prenom'] ?? '';
-    $birthdate = $_POST['date_naissance'] ?? '';
-    $nationality = $_POST['nationalite'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $phone = $_POST['telephone'] ?? '';
-    $address = $_POST['adresse'] ?? '';
-    $postal_code = $_POST['code_postal'] ?? '';
-    $city = $_POST['ville'] ?? '';
+// Gestion de l'upload de photo de profil
+elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['profile_pic'])) {
+    $result = handleProfilePicUpload($pdo, $_FILES['profile_pic'], $_SESSION['user_id']);
     
-    $user_id = $_SESSION['user_id']; // Correction ici
-
-    try {
-        $sql = "UPDATE users SET 
-                civility = :civility,
-                firstname = :firstname,
-                lastname = :lastname,
-                birthdate = :birthdate,
-                nationality = :nationality,
-                email = :email,
-                phone = :phone,
-                address = :address,
-                postal_code = :postal_code,
-                city = :city
-                WHERE id = :user_id";
-                
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'civility' => $civility,
-            'firstname' => $firstname,
-            'lastname' => $lastname,
-            'birthdate' => $birthdate,
-            'nationality' => $nationality,
-            'email' => $email,
-            'phone' => $phone,
-            'address' => $address,
-            'postal_code' => $postal_code,
-            'city' => $city,
-            'user_id' => $user_id
-        ]);
-
-        $_SESSION['message_success'] = "Les informations ont été mises à jour avec succès!";
-        header('Location: profil.php');
-        exit();
-    } catch(PDOException $e) {
-        $_SESSION['message_error'] = "Erreur lors de la mise à jour: " . $e->getMessage();
-        header('Location: profil.php');
-        exit();
+    if (isset($result['error'])) {
+        $_SESSION['upload_error'] = $result['error'];
+    } else {
+        $_SESSION['upload_success'] = $result['success'];
     }
+    header('Location: profil.php');
+    exit();
 }
 
-// Récupération des messages de la session
+// Gestion de la mise à jour du profil
+elseif ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    error_log('Tentative de mise à jour du profil');
+    $result = handleProfileUpdate($pdo, $_POST, $_SESSION['user_id']);
+    error_log('Résultat de la mise à jour: ' . print_r($result, true));
+    
+    if (isset($result['error'])) {
+        $_SESSION['message_error'] = $result['error'];
+    } else {
+        $_SESSION['message_success'] = $result['success'];
+    }
+    header('Location: profil.php');
+    exit();
+}
+
+// Récupération des messages de session
 $message_success = $_SESSION['message_success'] ?? null;
 $message_error = $_SESSION['message_error'] ?? null;
-
-// Ajouter avec les autres récupérations de messages
 $password_success = $_SESSION['password_success'] ?? null;
 $password_error = $_SESSION['password_error'] ?? null;
+$upload_success = $_SESSION['upload_success'] ?? null;
+$upload_error = $_SESSION['upload_error'] ?? null;
 
-// Suppression des messages de la session après les avoir récupérés
-unset($_SESSION['message_success']);
-unset($_SESSION['message_error']);
+// Nettoyage des messages de session
+unset(
+    $_SESSION['message_success'],
+    $_SESSION['message_error'],
+    $_SESSION['password_success'],
+    $_SESSION['password_error'],
+    $_SESSION['upload_success'],
+    $_SESSION['upload_error']
+);
 
-// Ajouter avec les autres unset
-unset($_SESSION['password_success']);
-unset($_SESSION['password_error']);
-
-// Récupération des données actuelles de l'utilisateur
-try {
-    $user_id = $_SESSION['user_id']; // Normalement ghadi takhdu men session
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-    $stmt->execute([$user_id]);
-    $user = $stmt->fetch();
-} catch(PDOException $e) {
-    $message_error = "Erreur lors de la récupération des données: " . $e->getMessage();
+// Récupération des données de l'utilisateur
+$user = getUserInfo($pdo, $_SESSION['user_id']);
+if (isset($user['error'])) {
+    $message_error = $user['error'];
 }
 ?>
 <!DOCTYPE html>
