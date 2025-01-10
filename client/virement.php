@@ -168,14 +168,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-700">Derniers virements</h3>
                     <div class="mt-4 space-y-4">
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <div>
-                                <p class="font-medium">Virement à John Doe</p>
-                                <p class="text-sm text-gray-500">12 janvier 2025</p>
-                                <p class="text-sm text-gray-500">Motif : Remboursement déjeuner</p>
+                        <?php
+                        $transactions = $user->getRecentTransactions(5);
+                        foreach ($transactions as $transaction) {
+                            $amount = number_format($transaction['amount'], 2, ',', ' ');
+                            $date = date('d F Y', strtotime($transaction['created_at']));
+                            $isDebit = in_array($transaction['transaction_type'], ['retrait', 'virement_sortant']);
+                            $amountClass = $isDebit ? 'text-red-600' : 'text-green-600';
+                            $amountPrefix = $isDebit ? '-' : '+';
+                            ?>
+                            <div class="flex items-center justify-between p-4 border-b">
+                                <div>
+                                    <p class="font-medium"><?php echo ucfirst($transaction['transaction_type']); ?></p>
+                                    <p class="text-sm text-gray-500"><?php echo $date; ?></p>
+                                </div>
+                                <p class="<?php echo $amountClass; ?> font-medium"><?php echo $amountPrefix; ?>MAD <?php echo $amount; ?></p>
                             </div>
-                            <p class="text-red-600 font-medium">-€125.00</p>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>

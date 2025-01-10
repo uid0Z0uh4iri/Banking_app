@@ -8,10 +8,6 @@ $pdo = $db->connect();
 $user = new User($pdo);
 $errors = [];
 
-
-
-
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
@@ -29,6 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['user_id'] = $user->getId();
             $_SESSION['user_name'] = $user->getName();
             $_SESSION['user_role'] = $user->getRole();
+            
+            // Check if user is inactive
+            if ($user->getStatus() === 'inactive') {
+                header('Location: client/inactif.php');
+                exit();
+            }
             
             // redirection vers le role 
             switch($user->getRole()) {
@@ -84,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ?>
             </div>
         <?php endif; ?>
-
+        
         <div class="login-container">
             <div class="logo-container">
                 <div class="bank-logo">

@@ -61,11 +61,13 @@ class User {
                 $this->name = $user['name'];
                 $this->email = $user['email'];
                 $this->role = $user['role'];
+                $this->status = $user['status'];
                 
                 // Ajoutons le rôle dans la session
                 $_SESSION['user_id'] = $this->id;
                 $_SESSION['user_email'] = $this->email;
                 $_SESSION['role'] = $user['role'];  // Important !
+                $_SESSION['status'] = $this->status;
                 
                 return true;
             }
@@ -150,7 +152,19 @@ class User {
         return $balances;
     }
 
-
+    // Récupérer les transactions récentes de l'utilisateur
+    public function getRecentTransactions($limit = 5) {
+        $stmt = $this->pdo->prepare("
+            SELECT t.*, a.account_type 
+            FROM transactions t
+            JOIN accounts a ON t.account_id = a.id
+            WHERE a.user_id = ?
+            ORDER BY t.created_at DESC
+            LIMIT " . intval($limit)
+        );
+        $stmt->execute([$this->id]);
+        return $stmt->fetchAll();
+    }
 
     // recupere le totale des depots
 
@@ -175,6 +189,7 @@ class User {
 
         return $TotaleRetrait;
     }
+
 
 
 

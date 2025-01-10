@@ -36,7 +36,7 @@ $balances = $user->getAccountBalances();
         <!-- Sidebar -->
         <div class="w-64 bg-white shadow-lg md:block hidden">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-600">BanKa2KA</h1>
+                <h1 class="text-2xl font-bold text-blue-600">Bienvenue <?php echo htmlspecialchars(ucfirst($_SESSION['user_name'])); ?></h1>
             </div>
             <nav class="mt-6">
             <a href="index.php" class="flex items-center w-full p-4 space-x-3 bg-blue-50 text-blue-600 border-r-4 border-blue-600">
@@ -114,27 +114,23 @@ $balances = $user->getAccountBalances();
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-700">Transactions récentes</h3>
                     <div class="mt-4 space-y-4">
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <div>
-                                <p class="font-medium">Virement à John Doe</p>
-                                <p class="text-sm text-gray-500">12 janvier 2025</p>
+                        <?php
+                        $transactions = $user->getRecentTransactions(5);
+                        foreach ($transactions as $transaction) {
+                            $amount = number_format($transaction['amount'], 2, ',', ' ');
+                            $date = date('d F Y', strtotime($transaction['created_at']));
+                            $isDebit = in_array($transaction['transaction_type'], ['retrait', 'virement_sortant']);
+                            $amountClass = $isDebit ? 'text-red-600' : 'text-green-600';
+                            $amountPrefix = $isDebit ? '-' : '+';
+                            ?>
+                            <div class="flex items-center justify-between p-4 border-b">
+                                <div>
+                                    <p class="font-medium"><?php echo ucfirst($transaction['transaction_type']); ?></p>
+                                    <p class="text-sm text-gray-500"><?php echo $date; ?></p>
+                                </div>
+                                <p class="<?php echo $amountClass; ?> font-medium"><?php echo $amountPrefix; ?>MAD <?php echo $amount; ?></p>
                             </div>
-                            <p class="text-red-600 font-medium">-€125.00</p>
-                        </div>
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <div>
-                                <p class="font-medium">Virement reçu de Marie Martin</p>
-                                <p class="text-sm text-gray-500">11 janvier 2025</p>
-                            </div>
-                            <p class="text-green-600 font-medium">+€350.00</p>
-                        </div>
-                        <div class="flex items-center justify-between p-4 border-b">
-                            <div>
-                                <p class="font-medium">Paiement Carte Bancaire</p>
-                                <p class="text-sm text-gray-500">10 janvier 2025</p>
-                            </div>
-                            <p class="text-red-600 font-medium">-€42.50</p>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
