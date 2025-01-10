@@ -201,6 +201,23 @@ class User {
 
         return $TotaleBalance;
     }
+
+    public function isFirstLogin()
+    {
+        $query = "SELECT is_first_login FROM users WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['id' => $this->id]);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['is_first_login'] == 1;
+    }
+
+    public function setFirstLoginComplete()
+    {
+        $query = "UPDATE users SET is_first_login = 0 WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        return $stmt->execute(['id' => $this->id]);
+    }
 }
 
 ?>

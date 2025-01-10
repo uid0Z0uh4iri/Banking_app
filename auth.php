@@ -32,6 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
             }
             
+            // Vérifier si c'est la première connexion
+            if ($user->isFirstLogin()) {
+                header('Location: activate_account.php');
+                exit();
+            }
+            
             // redirection vers le role 
             switch($user->getRole()) {
                 case 'admin':
@@ -86,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ?>
             </div>
         <?php endif; ?>
+        
         
         <div class="login-container">
             <div class="logo-container">
