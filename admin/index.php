@@ -40,7 +40,7 @@
                             <i data-lucide="users" class="w-5 h-5 mr-3"></i>
                             <span>Clients</span>
                         </a>
-                        <a href="compte.html" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
+                        <a href="clients.php" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
                             <i data-lucide="credit-card" class="w-5 h-5 mr-3"></i>
                             <span>Comptes</span>
                         </a>
@@ -118,12 +118,131 @@
                 <div class="p-4 sm:p-6 lg:p-8 flex-grow">
                     <!-- Statistiques -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                        <!-- ... Cards statistiques existantes ... -->
+                        <!-- Carte Clients Actifs -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Clients Actifs</p>
+                                    <h3 class="text-2xl font-bold mt-2">1,234</h3>
+                                    <p class="text-green-500 text-sm mt-2">
+                                        <i data-lucide="trending-up" class="w-4 h-4 inline"></i>
+                                        +12.5%
+                                    </p>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i data-lucide="users" class="w-6 h-6 text-blue-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carte Transactions -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Transactions (24h)</p>
+                                    <h3 class="text-2xl font-bold mt-2">€45,678</h3>
+                                    <p class="text-green-500 text-sm mt-2">
+                                        <i data-lucide="trending-up" class="w-4 h-4 inline"></i>
+                                        +8.3%
+                                    </p>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-full">
+                                    <i data-lucide="activity" class="w-6 h-6 text-green-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carte Comptes -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Nouveaux Comptes</p>
+                                    <h3 class="text-2xl font-bold mt-2">89</h3>
+                                    <p class="text-red-500 text-sm mt-2">
+                                        <i data-lucide="trending-down" class="w-4 h-4 inline"></i>
+                                        -2.7%
+                                    </p>
+                                </div>
+                                <div class="bg-purple-100 p-3 rounded-full">
+                                    <i data-lucide="credit-card" class="w-6 h-6 text-purple-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carte Revenus -->
+                        <div class="bg-white rounded-lg shadow-sm p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Revenus Mensuels</p>
+                                    <h3 class="text-2xl font-bold mt-2">€123,456</h3>
+                                    <p class="text-green-500 text-sm mt-2">
+                                        <i data-lucide="trending-up" class="w-4 h-4 inline"></i>
+                                        +15.2%
+                                    </p>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-full">
+                                    <i data-lucide="dollar-sign" class="w-6 h-6 text-yellow-600"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Grilles responsive -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-6">
-                        <!-- ... Rest of your content ... -->
+                    <!-- Actions Rapides -->
+                    <div class="mt-8">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Actions Rapides</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- Nouveau Client -->
+                            <a href="clients.php" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-blue-100 p-3 rounded-full">
+                                        <i data-lucide="user-plus" class="w-6 h-6 text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Nouveau Client</h4>
+                                        <p class="text-sm text-gray-500">Ajouter un client</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Nouvelle Transaction -->
+                            <a href="transactions.html" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-green-100 p-3 rounded-full">
+                                        <i data-lucide="repeat" class="w-6 h-6 text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Transaction</h4>
+                                        <p class="text-sm text-gray-500">Nouvelle transaction</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Nouveau Compte -->
+                            <a href="clients.php" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-purple-100 p-3 rounded-full">
+                                        <i data-lucide="folder-plus" class="w-6 h-6 text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Compte</h4>
+                                        <p class="text-sm text-gray-500">Créer un compte</p>
+                                    </div>
+                                </div>
+                            </a>
+
+                            <!-- Rapports -->
+                            <a href="#" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-yellow-100 p-3 rounded-full">
+                                        <i data-lucide="file-text" class="w-6 h-6 text-yellow-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800">Rapports</h4>
+                                        <p class="text-sm text-gray-500">Voir les rapports</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
