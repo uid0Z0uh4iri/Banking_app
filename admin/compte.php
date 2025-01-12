@@ -5,9 +5,86 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="compte.css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+
+    <style>
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 256px;
+    background-color: #111827;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-in-out;
+    z-index: 30;
+}
+
+@media (min-width: 1024px) {
+    .sidebar {
+        position: relative;
+        transform: none;
+    }
+}
+
+/* Pour le contenu de la sidebar */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+}
+
+.sidebar-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-subtitle {
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+/* Style pour les liens de navigation */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: #9ca3af;
+    text-decoration: none;
+    width: 100%;
+}
+
+.nav-link:hover {
+    color: white;
+    background-color: #1f2937;
+}
+
+.nav-link.active {
+    background-color: #1f2937;
+    color: white;
+}
+
+.nav-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+}
+
+
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="container">
     <div class="flex min-h-screen relative">
         <!-- Bouton Menu Mobile -->
         <button 
@@ -18,42 +95,37 @@
         </button>
 
         <!-- Sidebar avec classe pour contrôler la visibilité -->
-        <div id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 lg:relative lg:flex w-64 bg-gray-900 transition-transform duration-200 ease-in-out z-30">
-            <div class="flex flex-col h-full">
-                <div class="p-6">
-                    <div class="flex items-center justify-between">
-                        <h1 class="text-2xl font-bold text-white">Admin Panel</h1>
-                        <button onclick="toggleSidebar()" class="lg:hidden text-white">
-                            <i data-lucide="x" class="w-6 h-6"></i>
-                        </button>
-                    </div>
-                    <p class="text-gray-400 text-sm">Gestion bancaire</p>
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-header">
+                    <h1 class="sidebar-title">Admin Panel</h1>
+                    <p class="sidebar-subtitle">Gestion bancaire</p>
                 </div>
 
                 <!-- Navigation -->
                 <nav class="mt-6 flex-grow">
-                    <a href="#" class="flex items-center w-full px-6 py-3 text-white bg-gray-800">
-                        <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                    <a href="#" class="nav-link active">
+                        <i data-lucide="layout-dashboard" class="nav-icon w-5 h-5 mr-3"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="clients.html" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
-                        <i data-lucide="users" class="w-5 h-5 mr-3"></i>
+                    <a href="clients.html" class="nav-link">
+                        <i data-lucide="users" class="nav-icon w-5 h-5 mr-3"></i>
                         <span>Clients</span>
                     </a>
-                    <a href="compte.html" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
-                        <i data-lucide="credit-card" class="w-5 h-5 mr-3"></i>
+                    <a href="compte.html" class="nav-link">
+                        <i data-lucide="credit-card" class="nav-icon w-5 h-5 mr-3"></i>
                         <span>Comptes</span>
                     </a>
-                    <a href="transactions.html" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
-                        <i data-lucide="repeat" class="w-5 h-5 mr-3"></i>
+                    <a href="transactions.html" class="nav-link">
+                        <i data-lucide="repeat" class="nav-icon w-5 h-5 mr-3"></i>
                         <span>Transactions</span>
                     </a>
-                    <a href="#" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
-                        <i data-lucide="bell" class="w-5 h-5 mr-3"></i>
+                    <a href="#" class="nav-link">
+                        <i data-lucide="bell" class="nav-icon w-5 h-5 mr-3"></i>
                         <span>Notifications</span>
                     </a>
-                    <a href="#" class="flex items-center w-full px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800">
-                        <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                    <a href="#" class="nav-link">
+                        <i data-lucide="settings" class="nav-icon w-5 h-5 mr-3"></i>
                         <span>Paramètres</span>
                     </a>
                 </nav>
